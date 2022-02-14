@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "239246102057",
+    "project_id": "myrestoproject-bb96d",
+    "storage_bucket": "myrestoproject-bb96d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:239246102057:android:6a8384a6a072951ab0d638",
+        "android_client_info": {
+          "package_name": "com.example.mytestapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "239246102057-phs1f3t342mh3utjqm9ahe8nmks7g08u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlAuBQYlAANLZDDPmdM8C3UahPrT0gfUA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "239246102057-phs1f3t342mh3utjqm9ahe8nmks7g08u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
