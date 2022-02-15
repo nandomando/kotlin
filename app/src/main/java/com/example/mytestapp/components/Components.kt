@@ -1,25 +1,39 @@
 package com.example.mytestapp.components
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.example.mytestapp.navigation.RestoNavigation
+import com.example.mytestapp.navigation.RestoScreens
 
 
 @Composable
@@ -112,3 +126,119 @@ fun PasswordVisibility(passwordVisibility: MutableState<Boolean>) {
     }
 
 }
+
+///////////////////////////////////////////////my test of bottom nav bar
+@Preview
+@Composable
+fun BottomNavBar(navController: NavController = NavController(context = LocalContext.current)) {
+    Row(modifier = Modifier. fillMaxWidth(),) {
+        Column(modifier = Modifier.weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally) {
+            Icon(
+                imageVector = Icons.Filled.Home,
+                contentDescription = "home",
+                modifier = Modifier.clickable {
+                    navController.navigate(RestoScreens.RestoHomeScreen.name)
+                }
+            )
+        }
+        Column(modifier = Modifier.weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally) {
+            Icon(
+                imageVector = Icons.Filled.Menu,
+                contentDescription = "Detail",
+                modifier = Modifier.clickable {
+                    navController.navigate(RestoScreens.DetailScreen.name)
+                }
+            )
+        }
+        Column(modifier = Modifier.weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally) {
+            Icon(
+                imageVector = Icons.Filled.Settings,
+                contentDescription = "Settings",
+                modifier = Modifier.clickable {
+                    navController.navigate(RestoScreens.RestoSettingsScreen.name)
+                }
+            )
+        }
+
+
+    }
+}
+
+/////////////////////////navbarcomponent
+//@Preview
+//@Composable
+//fun NavBarComposable () {
+//    val navController = rememberNavController()
+//
+//    val navigationItems = listOf(
+//        Destinations.Pantalla1,
+//        Destinations.Pantalla2,
+//        Destinations.Pantalla3
+//    )
+//
+//    Scaffold(
+//        bottomBar = { BottomNavigationBar(navController = navController, items = navigationItems) },
+////        floatingActionButton = { FloatingActionButton(onClick = {}) {
+////            Icon(imageVector = Icons.Default.Add, contentDescription = "Fab Icon")
+////        } },
+////        isFloatingActionButtonDocked = false,
+////        floatingActionButtonPosition = FabPosition.End
+//    ){
+//        //NavigationHost(navController)
+//        navController
+//    }
+//}
+
+/////////////////////////////////////
+
+//@Composable
+//fun BottomNavigationBar(
+//    navController: NavHostController,
+//    items: List<Destinations>
+//) {
+//    val currentRoute = currentRoute(navController)
+//
+//    BottomNavigation(
+//        backgroundColor = Color(0.0f, 0.8f, 0.8f),
+//        contentColor = Color.White
+//    ) {
+//        items.forEach { screen ->
+//            BottomNavigationItem(
+//                icon = { Icon(imageVector = screen.icon, contentDescription = screen.title) },
+//                label = { Text(screen.title) },
+//                selected = currentRoute == screen.route,
+//                onClick = {
+//                    navController.navigate(screen.route) {
+//                        popUpTo(navController.graph.findStartDestination().id){
+//                            saveState = true
+//                        }
+//
+//                        launchSingleTop = true
+//                    }
+//                },
+//                alwaysShowLabel = true
+//            )
+//        }
+//    }
+//}
+//
+//@Composable
+//private fun currentRoute(navController: NavHostController): String? {
+//    val navBackStackEntry by navController.currentBackStackEntryAsState()
+//    return navBackStackEntry?.destination?.route
+//}
+//
+////////////////////////////////////////
+//
+//sealed class Destinations(
+//    val route: String,
+//    val title: String,
+//    val icon: ImageVector
+//) {
+//    object Pantalla1: Destinations(RestoScreens.RestoHomeScreen.name, "Pantalla 1", Icons.Filled.Home)
+//    object Pantalla2: Destinations(RestoScreens.DetailScreen.name, "Pantalla 2", Icons.Filled.Settings)
+//    object Pantalla3: Destinations(RestoScreens.SearchScreen.name, "Pantalla 3", Icons.Filled.Favorite)
+//}
