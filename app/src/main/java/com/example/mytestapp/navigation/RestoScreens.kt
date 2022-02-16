@@ -1,5 +1,7 @@
 package com.example.mytestapp.navigation
 
+import com.example.mytestapp.screens.creatItem.CreatItem
+
 enum class RestoScreens {
     SplashScreen,
     LoginScreen,
@@ -9,6 +11,7 @@ enum class RestoScreens {
     DetailScreen,
     UpdateScreen,
     RestoStatsScreen,
+    CreatItemScreen,
     RestoSettingsScreen;
     companion object {
         fun fromRoute(route: String?): RestoScreens
@@ -22,6 +25,7 @@ enum class RestoScreens {
             UpdateScreen.name -> UpdateScreen
             RestoStatsScreen.name -> RestoStatsScreen
             RestoSettingsScreen.name -> RestoSettingsScreen
+            CreatItemScreen.name -> CreatItemScreen
             null -> RestoHomeScreen
             else -> throw IllegalAccessException("Route $route is not recognized")
         }

@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.mytestapp.screens.RestoSplashScreen
+import com.example.mytestapp.screens.creatItem.CreatItem
 import com.example.mytestapp.screens.details.ItemDetailsScreen
 import com.example.mytestapp.screens.home.Home
 import com.example.mytestapp.screens.login.RestoLoginScreen
@@ -51,6 +52,10 @@ fun RestoNavigation() {
 
         composable(RestoScreens.RestoSettingsScreen.name) {
             RestoSettings(navController = navController)
+        }
+
+        composable(RestoScreens.CreatItemScreen.name) {
+            CreatItem(navController = navController)
         }
     }
 }

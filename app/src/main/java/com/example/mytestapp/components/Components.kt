@@ -1,12 +1,14 @@
 package com.example.mytestapp.components
 
+import android.util.Log
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -16,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -24,6 +27,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,6 +36,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.mytestapp.model.MItem
 import com.example.mytestapp.navigation.RestoNavigation
 import com.example.mytestapp.navigation.RestoScreens
 
@@ -128,7 +133,7 @@ fun PasswordVisibility(passwordVisibility: MutableState<Boolean>) {
 }
 
 ///////////////////////////////////////////////my test of bottom nav bar
-@Preview
+
 @Composable
 fun BottomNavBar(navController: NavController = NavController(context = LocalContext.current)) {
     Row(modifier = Modifier. fillMaxWidth(),) {
@@ -165,6 +170,129 @@ fun BottomNavBar(navController: NavController = NavController(context = LocalCon
 
 
     }
+}
+@Composable
+fun ListCard(item: MItem,
+    onPressDetails:(currentitem: MItem) -> Unit)
+    {
+      Card(shape = RoundedCornerShape(15.dp),
+      backgroundColor = Color.White,
+      elevation = 6.dp,
+      modifier = Modifier
+          .padding(5.dp)
+          .height(100.dp)
+          .width(100.dp)
+          .clickable {
+              onPressDetails.invoke(item)
+
+          }) {
+          Column(modifier = Modifier.fillMaxWidth(),
+          verticalArrangement = Arrangement.Center,
+          horizontalAlignment = Alignment.CenterHorizontally) {
+              Text(text = "${item.name}",
+              overflow = TextOverflow.Visible)
+          }
+      }
+
+
+}
+/////////////////////////////////////card to display item and price
+
+@Composable
+fun itemCardPrice () {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = "")
+            }
+            Column(modifier = Modifier.weight(1f),) {
+                Text(text = "")
+            }
+        }
+    }
+}
+
+///////////funtion to display nameitem for cost
+
+@Composable
+fun ItemDisplayToCart (item: MItem) {
+    val scrollState = rememberScrollState()
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .verticalScroll(scrollState)) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(text = "${item.name}")
+                    }
+                    Column(modifier = Modifier.weight(1f),) {
+                        Text(text = "${item.price}")
+                    }
+                }
+            }
+        }
+
+    }
+}
+
+//////////////////////display lazy col test
+@Composable
+fun displayLazyCol (
+    itemOrdered: MItem,
+    onAddNote: (MItem) -> Unit,
+    onRemoveNote: (MItem) -> Unit
+) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        LazyColumn{
+            item {
+                itemRow(item = itemOrdered, onCurrentItemClicked = {})
+                Log.d("lazycol", "displayLazyCol: $itemOrdered")
+            }
+//            item(itemOrdered){ item ->
+//                itemRow(item = itemOrdered, onCurrentItemClicked = {})
+////                itemRow(item = ,
+////                    //onNoteClicked = { onRemoveNote(it) }
+////             )
+//            }
+        }
+    }
+}
+
+
+
+
+//////////item row card
+
+@Composable
+fun itemRow(
+    modifier: Modifier = Modifier,
+    item: MItem,
+    onCurrentItemClicked: (MItem) -> Unit) {
+    Surface(
+        modifier
+            .padding(4.dp)
+            .clip(RoundedCornerShape(topEnd = 33.dp, bottomStart = 33.dp))
+            .fillMaxWidth(),
+        color = Color(0xFFDFE6EB),
+        elevation = 6.dp) {
+        Column(modifier
+            .clickable { onCurrentItemClicked(item) }
+            .padding(horizontal = 14.dp, vertical = 6.dp),
+            horizontalAlignment = Alignment.Start) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = "${item.name}")
+                Log.d("itemrow", "itemRow: ${item.name}")
+            }
+            Column(modifier = Modifier.weight(1f),) {
+                Text(text = "${item.price}")
+            }
+
+        }
+
+
+    }
+
 }
 
 /////////////////////////navbarcomponent
