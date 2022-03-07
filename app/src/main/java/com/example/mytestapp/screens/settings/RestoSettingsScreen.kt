@@ -3,6 +3,7 @@ package com.example.mytestapp.screens.settings
 import android.graphics.drawable.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -47,6 +48,11 @@ fun RestoSettings(navController: NavController = NavController(context = LocalCo
             }
 
         }
+        Text(text = "edit Item", color =
+        Color.Red,
+            modifier = Modifier.clickable {
+            navController.navigate(RestoScreens.CreatItemScreen.name)
+        })
 
 
         Row(modifier = Modifier, verticalAlignment = Alignment.Bottom) {

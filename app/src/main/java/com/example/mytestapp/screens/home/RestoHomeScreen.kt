@@ -1,81 +1,189 @@
 package com.example.mytestapp.screens.home
 
-import android.provider.ContactsContract
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavController
+import coil.compose.ImagePainter
 import com.example.mytestapp.components.*
+import com.example.mytestapp.data.TableDataBaseDao
 import com.example.mytestapp.model.MItem
-import java.util.*
+import com.example.mytestapp.model.MItemDessert
+import com.example.mytestapp.model.MItemDrinks
+import com.example.mytestapp.model.MTable
+import com.example.mytestapp.viewModels.DessertViewModel
+import com.example.mytestapp.viewModels.DrinksViewModel
+import com.example.mytestapp.viewModels.ItemViewModel
+import com.example.mytestapp.viewModels.TableViewModel
+import com.google.rpc.context.AttributeContext
+import io.grpc.internal.SharedResourceHolder
 
 
-@Preview
 @Composable
-fun Home(navController: NavController = NavController(context = LocalContext.current)){
+fun Home(navController: NavController,
+    itemViewModel: ItemViewModel,
+         dessertViewModel: DessertViewModel,
+         drinksViewModel: DrinksViewModel,
+         tableViewModel: TableViewModel
+){
+    val tableList = tableViewModel.tableList.collectAsState().value
+    val drinksList = drinksViewModel.drinksList.collectAsState().value
+    val dessertList = dessertViewModel.dessertList.collectAsState().value
+    val itemsList = itemViewModel.itemList.collectAsState().value
 
-    val listOfItems = listOf(
-        MItem(id = "cccccc", name = "enchiladas rojas", description = "mejorejndjsnknskdnksnjnjdfnjdnsjnsnm", price = "80.50"),
-        MItem(id = "cccccc", name = "tostadas de pollo", description = "mejorejndjsnknskdnksnjnjdfnjdnsjnsnm", price = "40.26"),
-        MItem(id = "cccccc", name = "crema batida", description = "mejorejndjsnknskdnksnjnjdfnjdnsjnsnm", "40.5"),
-        MItem(id = "cccccc", name = "enchiladas rojas", description = "mejorejndjsnknskdnksnjnjdfnjdnsjnsnm","75.21"),
-        MItem(id = "cccccc", name = "pozole rojo", description = "mejorejndjsnknskdnksnjnjdfnjdnsjnsnm", "10"),
-        MItem(id = "cccccc", name = "enchiladas rojas", description = "mejorejndjsnknskdnksnjnjdfnjdnsjnsnm", "20"),
-        MItem(id = "cccccc", name = "mole de morelos", description = "mejorejndjsnknskdnksnjnjdfnjdnsjnsnm", "70"),
-        MItem(id = "cccccc", name = "enchiladas rojas", description = "mejorejndjsnknskdnksnjnjdfnjdnsjnsnm", "120"),
-        MItem(id = "cccccc", name = "enchiladas rojas", description = "mejorejndjsnknskdnksnjnjdfnjdnsjnsnm", "90"),
-        MItem(id = "cccccc", name = "enchiladas rojas", description = "mejorejndjsnknskdnksnjnjdfnjdnsjnsnm", "48"),
-        MItem(id = "cccccc", name = "enchiladas rojas", description = "mejorejndjsnknskdnksnjnjdfnjdnsjnsnm"),
-        MItem(id = "cccccc", name = "enchiladas rojas", description = "mejorejndjsnknskdnksnjnjdfnjdnsjnsnm"),
-        MItem(id = "cccccc", name = "enchiladas rojas", description = "mejorejndjsnknskdnksnjnjdfnjdnsjnsnm"),
-        MItem(id = "cccccc", name = "pezcado a la plancha", description = "mejorejndjsnknskdnksnjnjdfnjdnsjnsnm"),
-        MItem(id = "cccccc", name = "enchiladas rojas", description = "mejorejndjsnknskdnksnjnjdfnjdnsjnsnm"),
-        MItem(id = "cccccc", name = "enchiladas rojas", description = "mejorejndjsnknskdnksnjnjdfnjdnsjnsnm"),
-        MItem(id = "cccccc", name = "enchiladas rojas", description = "mejorejndjsnknskdnksnjnjdfnjdnsjnsnm"),
-        MItem(id = "cccccc", name = "enchiladas rojas", description = "mejorejndjsnknskdnksnjnjdfnjdnsjnsnm")
-    )
+    var currentItem by remember { mutableStateOf( MItem())}
+    var selectedTable by remember { mutableStateOf(MTable())}
 
-var currentItem by remember {
-    mutableStateOf( MItem())
-}
+    var expanded by remember { mutableStateOf(false) }
+    var selectedTableText by remember { mutableStateOf("") }
 
-    ///
+    val checkedPlats = remember { mutableStateOf(true)}
+    val checkedDessert = remember { mutableStateOf(false)}
+    val checkedDrinks = remember { mutableStateOf(false)}
+
+
     Column(modifier = Modifier.fillMaxSize()) {
-// bar to toggle between drinks, desserts, food, tables, and to go
-        Row(modifier = Modifier) {
-            Text(text = "homebaby", color = Color.Green)
 
+        Row(modifier = Modifier. fillMaxWidth(),) {
+            Column(modifier = Modifier
+                .weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                TextButton(onClick = { expanded = !expanded }) {
+                    //Icon(imageVector = icon, contentDescription = "")
+                    Text(text = "Table: $selectedTableText", overflow = TextOverflow.Clip)
+                }
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    //modifier = Modifier.width(with(LocalDensity.current){textFieldSize.width.toDp()})
+                ) {
+                    tableList.forEach { table ->
+                        DropdownMenuItem(onClick = {
+                            selectedTableText = table.number.toString()
+                            expanded = false
+                        }) {
+                            //table.tableId
+                            Text(text = table.number.toString())
+                            val selectedTbl = produceState<MTable>(initialValue = MTable()) {
+                                value = table
+                            }
+                            selectedTable = table
+                        }
+                    }
+                }
+                //dropDownMenu(suggestions = tableList)
+
+                }
+            Column(modifier = Modifier
+                .weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                TextButton(onClick = {
+                    checkedPlats.value = true
+                    checkedDrinks.value = false
+                    checkedDessert.value = false
+                }, colors = ButtonDefaults.textButtonColors(
+                    backgroundColor = if (checkedPlats.value) Color.LightGray else Color.Transparent
+                )) {
+                    Text(text = "Plats")
+                }
+            }
+            Column(modifier = Modifier
+                .weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally) {
+                TextButton(onClick = {
+                    checkedPlats.value = false
+                    checkedDrinks.value = false
+                    checkedDessert.value = true
+                }, colors = ButtonDefaults.textButtonColors(
+                    backgroundColor = if (checkedDessert.value) Color.LightGray else Color.Transparent
+                )) {
+                    Text(text = "Dessert")
+                }
+            }
+            Column(modifier = Modifier
+                .weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                TextButton(onClick = {
+                    checkedPlats.value = false
+                    checkedDrinks.value = true
+                    checkedDessert.value = false
+                }, colors = ButtonDefaults.textButtonColors(
+                    backgroundColor = if (checkedDrinks.value) Color.LightGray else Color.Transparent
+                )) {
+                    Text(text = "Drinks")
+                }
+
+            }
+            Column(modifier = Modifier
+                .weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                TextButton(onClick = {
+
+                }, colors = ButtonDefaults.textButtonColors(
+                    // backgroundColor = if () Color.LightGray else Color.Transparent
+                )) {
+                    Text(text = "To Go")
+                }
+            }
         }
 // list of items to send (scrawlable)
-        Row(modifier = Modifier.weight(1f)) {
-        // ListCard()
-            VerticalScrollableComponent(listOfItems = listOfItems){
-                // necesito pasar el item
-                Log.d("TAG", "gridverticalscroll:$it ")
-                currentItem = it
+        if (checkedPlats.value) {
+            Row(modifier = Modifier.weight(1f)) {
+                VerticalScrollablePlatsComponent(itemsList){
+                    // necesito pasar el item
+                    Log.d("TAG", "verticalScrollItem:$it ")
+                    currentItem = it
+                    selectedTable.plats = it
+                    tableViewModel.updateTable(selectedTable)
+
+                    Log.d("", "selected table: ${selectedTable.plats}")
+                    //Log.d("", "plats: ${currentItem}")
+                }
+            }
+        }
+        if (checkedDessert.value) {
+            Row(modifier = Modifier.weight(1f)) {
+                VerticalScrollableDessertComponent(dessertList){
+                    // necesito pasar el item
+                    Log.d("TAG", "verticalScrollDessert:$it ")
+                    //currentItem.add(it)
+                    //Log.d("", "dessert: ${currentItem}")
+
+                }
             }
 
         }
-// this row items sended should be scrowlable
+        if (checkedDrinks.value) {
+            Row(modifier = Modifier.weight(1f)) {
+                VerticalScrollableDrinkComponent(drinksList){
+                    // necesito pasar el item
+                    Log.d("TAG", "verticalScrollItem:$it ")
+                    //currentItem = it
+                   // currentItem.add(it)
+                }
+            }
+        }
+// Row items sended should be scrowlable
         Row(modifier = Modifier.weight(1f)) {
-            Log.d("lineproduc", "lineproduct: $currentItem")
-            ItemDisplayToCart(currentItem)
-            //displayLazyCol(currentItem, {}, {})
-
+            ItemDisplayToCart(selectedTable)
+            //displayLazyCol(currentItem)
 
         }
 
@@ -90,9 +198,10 @@ var currentItem by remember {
 
 
 
+/////////plats scrollable ////
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun VerticalScrollableComponent(listOfItems: List<MItem>, onCardPressed: (MItem) -> Unit)  {
+fun VerticalScrollablePlatsComponent(listOfItems: List<MItem>, onCardPressed: (MItem) -> Unit)  {
     Column(modifier = Modifier
         .fillMaxSize()
     ) {
@@ -100,10 +209,91 @@ fun VerticalScrollableComponent(listOfItems: List<MItem>, onCardPressed: (MItem)
             cells = GridCells.Fixed(3)) {
             items(listOfItems.size) {
                 index ->
-                ListCard( listOfItems[index]) {
+                ListPlatsCard( listOfItems[index]) {
                     onCardPressed(it)
                 }
             }
         }
     }
 }
+//////////////////dessert scrollable ////////
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun VerticalScrollableDessertComponent(listOfDesserts: List<MItemDessert>, onCardPressed: (MItemDessert) -> Unit)  {
+    Column(modifier = Modifier
+        .fillMaxSize()
+    ) {
+        LazyVerticalGrid(
+            cells = GridCells.Fixed(3)) {
+            items(listOfDesserts.size) {
+                    index ->
+                ListDessertCard( listOfDesserts[index]) {
+                    onCardPressed(it)
+                }
+            }
+        }
+    }
+}
+///////////////////drink scrollable///////
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun VerticalScrollableDrinkComponent(listOfDrinks: List<MItemDrinks>, onCardPressed: (MItemDrinks) -> Unit)  {
+    Column(modifier = Modifier
+        .fillMaxSize()
+    ) {
+        LazyVerticalGrid(
+            cells = GridCells.Fixed(3)) {
+            items(listOfDrinks.size) {
+                    index ->
+                ListDrinksCard( listOfDrinks[index]) {
+                    onCardPressed(it)
+                }
+            }
+        }
+    }
+}
+
+
+////////////////////////////////////
+
+//@Composable
+//fun dropDownMenu(suggestions: List<MTable>) {
+//
+//    var expanded by remember { mutableStateOf(false) }
+//    var selectedTableText by remember { mutableStateOf("") }
+//
+////    val icon = if (expanded)
+////        Icons.Filled.KeyboardArrowUp
+////    else
+////        Icons.Filled.KeyboardArrowDown
+//
+//
+//    Column(Modifier.fillMaxWidth()) {
+//
+//        TextButton(onClick = { expanded = !expanded }) {
+//            //Icon(imageVector = icon, contentDescription = "")
+//            Text(text = "Table: $selectedTableText", overflow = TextOverflow.Clip)
+//        }
+//        DropdownMenu(
+//            expanded = expanded,
+//            onDismissRequest = { expanded = false },
+//            //modifier = Modifier.width(with(LocalDensity.current){textFieldSize.width.toDp()})
+//        ) {
+//            suggestions.forEach { table ->
+//                DropdownMenuItem(onClick = {
+//                    selectedTableText = table.number.toString()
+//                    expanded = false
+//                }) {
+//                    //table.tableId
+//                    Text(text = table.number.toString())
+//                    val selectedTbl = produceState<MTable>(initialValue = MTable()) {
+//                        value = table
+//                    }
+//                    //selectedTable = table
+//                }
+//            }
+//        }
+//    }
+
+//}

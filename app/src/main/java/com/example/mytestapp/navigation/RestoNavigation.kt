@@ -2,11 +2,11 @@ package com.example.mytestapp.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.mytestapp.viewModels.ItemViewModel
 import com.example.mytestapp.screens.RestoSplashScreen
 import com.example.mytestapp.screens.creatItem.CreatItem
 import com.example.mytestapp.screens.details.ItemDetailsScreen
@@ -15,7 +15,11 @@ import com.example.mytestapp.screens.login.RestoLoginScreen
 import com.example.mytestapp.screens.search.SearchScreen
 import com.example.mytestapp.screens.settings.RestoSettings
 import com.example.mytestapp.screens.stats.RestoStatsScreen
+import com.example.mytestapp.screens.tables.Tables
 import com.example.mytestapp.screens.update.ItemUpdateScreen
+import com.example.mytestapp.viewModels.DessertViewModel
+import com.example.mytestapp.viewModels.DrinksViewModel
+import com.example.mytestapp.viewModels.TableViewModel
 
 @ExperimentalComposeUiApi
 @Composable
@@ -27,7 +31,17 @@ fun RestoNavigation() {
         }
 
         composable(RestoScreens.RestoHomeScreen.name) {
-            Home(navController = navController)
+            val itemViewModel = hiltViewModel<ItemViewModel>()
+            val dessertViewModel = hiltViewModel<DessertViewModel>()
+            val drinksViewModel = hiltViewModel<DrinksViewModel>()
+            val tableViewModel = hiltViewModel<TableViewModel>()
+            Home(
+                navController = navController,
+                itemViewModel = itemViewModel,
+                dessertViewModel = dessertViewModel,
+                drinksViewModel = drinksViewModel,
+                tableViewModel = tableViewModel
+            )
         }
 
         composable(RestoScreens.LoginScreen.name) {
@@ -54,8 +68,21 @@ fun RestoNavigation() {
             RestoSettings(navController = navController)
         }
 
+        composable(RestoScreens.TablesScreen.name) {
+            val tableViewModel = hiltViewModel<TableViewModel>()
+            Tables(navController = navController, tableViewModel = tableViewModel)
+        }
+
         composable(RestoScreens.CreatItemScreen.name) {
-            CreatItem(navController = navController)
+            val itemViewModel = hiltViewModel<ItemViewModel>()
+            val drinksViewModel = hiltViewModel<DrinksViewModel>()
+            val dessertViewModel = hiltViewModel<DessertViewModel>()
+            CreatItem(
+                navController = navController,
+                itemViewModel =  itemViewModel,
+                drinksViewModel = drinksViewModel,
+                dessertViewModel = dessertViewModel
+            )
         }
     }
 }

@@ -12,6 +12,7 @@ enum class RestoScreens {
     UpdateScreen,
     RestoStatsScreen,
     CreatItemScreen,
+    TablesScreen,
     RestoSettingsScreen;
     companion object {
         fun fromRoute(route: String?): RestoScreens
@@ -26,6 +27,7 @@ enum class RestoScreens {
             RestoStatsScreen.name -> RestoStatsScreen
             RestoSettingsScreen.name -> RestoSettingsScreen
             CreatItemScreen.name -> CreatItemScreen
+            TablesScreen.name -> TablesScreen
             null -> RestoHomeScreen
             else -> throw IllegalAccessException("Route $route is not recognized")
         }

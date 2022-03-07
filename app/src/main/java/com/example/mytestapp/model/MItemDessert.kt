@@ -6,22 +6,17 @@ import androidx.room.PrimaryKey
 import java.util.*
 
 
-@Entity(tableName = "items_tbl")
-data class MItem(
+@Entity(tableName = "items_dessert_tbl")
+data class MItemDessert(
     @PrimaryKey
-    var plateId: UUID = UUID.randomUUID(),
+    var dessertId: UUID = UUID.randomUUID(),
 
-    @ColumnInfo(name = "item_name")
+    @ColumnInfo(name = "item_dessert_name")
     var name: String? = null,
 
-    @ColumnInfo(name = "item_description")
+    @ColumnInfo(name = "item_dessert_description")
     var description: String? = null,
 
-    @ColumnInfo(name = "item_price")
+    @ColumnInfo(name = "item_dessert_price")
     var price: String? = null,
-) {}
-
-
-
-
-
+){}
