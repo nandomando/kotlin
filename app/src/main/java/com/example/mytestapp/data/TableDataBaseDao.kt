@@ -1,6 +1,7 @@
 package com.example.mytestapp.data
 
 import androidx.room.*
+import com.example.mytestapp.model.MItem
 import com.example.mytestapp.model.MTable
 import kotlinx.coroutines.flow.Flow
 
@@ -15,6 +16,12 @@ interface TableDataBaseDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(table: MTable)
+///////////////
+//
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    suspend fun insertItem(item: MItem)
+
+    /////////////////////
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(table: MTable)

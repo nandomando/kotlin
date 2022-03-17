@@ -3,6 +3,7 @@ package com.example.mytestapp.viewModels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mytestapp.model.MItem
 import com.example.mytestapp.model.MTable
 import com.example.mytestapp.repository.TableRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +21,9 @@ class TableViewModel @Inject constructor(private val repository: TableRepository
     private val _tableList = MutableStateFlow<List<MTable>>(emptyList())
     val tableList = _tableList.asStateFlow()
 
+//    private val _tableItemList = MutableStateFlow<List<MItem>>(emptyList())
+//    val tableItemList = _tableItemList.asStateFlow()
+
     init {
 
         viewModelScope.launch(Dispatchers.IO){
@@ -32,22 +36,31 @@ class TableViewModel @Inject constructor(private val repository: TableRepository
                     }
                 }
         }
+
+        //////
     }
 
     fun addTable(table: MTable) = viewModelScope.launch {
         repository.addTable(table)
     }
 
+
     fun updateTable(table: MTable) = viewModelScope.launch {
         repository.updateTable(table)
     }
+    ///////////////////////////////
+//    fun addItem(item: MItem) = viewModelScope.launch {
+//        repository.addItem(item)
+//    }
+
+    /////////////////
 
     fun removeTable(table: MTable) = viewModelScope.launch {
         repository.deleteTable(table)
     }
 
-//    fun getTableById(string: String) = viewModelScope.launch {
-//        repository.getTableById(string)
-//    }
+    fun getTableById(string: String) = viewModelScope.launch {
+        repository.getTableById(string)
+    }
 
 }

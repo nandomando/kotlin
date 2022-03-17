@@ -28,6 +28,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -296,14 +297,16 @@ fun ItemDisplayToCart (table: MTable ) {
         .fillMaxSize()
         .verticalScroll(scrollState)) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(text = "${table.plats?.name}")
-                    }
-                    Column(modifier = Modifier.weight(1f),) {
-                        Text(text = "${table.plats?.price}")
-                    }
+            for (item in table.plats!!)
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Row(modifier = Modifier.fillMaxWidth()
+                    .padding(start = 15.dp, end = 15.dp)) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(text = "${item.name}")
+                        }
+                        Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
+                            Text(text = "$${item.price}")
+                        }
                 }
             }
         }

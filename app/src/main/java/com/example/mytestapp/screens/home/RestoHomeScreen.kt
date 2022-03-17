@@ -2,7 +2,6 @@ package com.example.mytestapp.screens.home
 
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
@@ -44,12 +43,15 @@ fun Home(navController: NavController,
          tableViewModel: TableViewModel
 ){
     val tableList = tableViewModel.tableList.collectAsState().value
+//    val tableItemList = tableViewModel.tableItemList.collectAsState().value
     val drinksList = drinksViewModel.drinksList.collectAsState().value
     val dessertList = dessertViewModel.dessertList.collectAsState().value
     val itemsList = itemViewModel.itemList.collectAsState().value
 
     var currentItem by remember { mutableStateOf( MItem())}
     var selectedTable by remember { mutableStateOf(MTable())}
+
+//    var selectedTableId by remember { mutableStateOf("") }
 
     var expanded by remember { mutableStateOf(false) }
     var selectedTableText by remember { mutableStateOf("") }
@@ -78,19 +80,25 @@ fun Home(navController: NavController,
                         DropdownMenuItem(onClick = {
                             selectedTableText = table.number.toString()
                             expanded = false
-                        }) {
-                            //table.tableId
-                            Text(text = table.number.toString())
-                            val selectedTbl = produceState<MTable>(initialValue = MTable()) {
-                                value = table
-                            }
+//                            selectedTableId = table.tableId.toString()
                             selectedTable = table
+                        }) {
+                            table.tableId
+                            Text(text = table.number.toString())
+//                            val selectedTbl = produceState<MTable>(initialValue = MTable()) {
+//                                value = table
+//                            }
+
+//                            Log.d("menu", "selectedtable:$selectedTable ")
                         }
                     }
                 }
                 //dropDownMenu(suggestions = tableList)
 
                 }
+            Log.d("", "after choosing: ${selectedTable.number}")
+            Log.d("", "after table string: ${selectedTable}")
+
             Column(modifier = Modifier
                 .weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally) {
@@ -150,11 +158,15 @@ fun Home(navController: NavController,
                     // necesito pasar el item
                     Log.d("TAG", "verticalScrollItem:$it ")
                     currentItem = it
-                    selectedTable.plats = it
+                    Log.d("", "afterpassing:$selectedTable ")
+//                    val currentTable = tableViewModel.getTableById(selectedTable.tableId.toString())
+//                    Log.d("getId", "currentTable: $currentTable")
+                    selectedTable.plats?.add(it)
                     tableViewModel.updateTable(selectedTable)
 
-                    Log.d("", "selected table: ${selectedTable.plats}")
-                    //Log.d("", "plats: ${currentItem}")
+                    Log.d("", "afteradding,Item: ${it}")
+                    Log.d("", "afteradding,table plats: ${selectedTable}")
+
                 }
             }
         }
@@ -186,6 +198,16 @@ fun Home(navController: NavController,
             //displayLazyCol(currentItem)
 
         }
+/////////////////buttones///////////////////////
+
+        Row() {
+            TextButton(onClick = { /*TODO*/ }, modifier = Modifier.weight(1f)) {
+                Text(text = "Paye")
+            }
+            TextButton(onClick = { /*TODO*/ }, modifier = Modifier.weight(1f)) {
+                Text(text = "Send")
+            }
+        }        
 
 // nav bottom bar
         Row(modifier = Modifier, verticalAlignment = Alignment.Bottom) {

@@ -5,6 +5,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 @Entity(tableName = "tables_tbl")
@@ -18,12 +19,13 @@ data class MTable(
     @ColumnInfo(name = "client_id")
     var client_id: String? = null,
 
-    @Embedded(prefix = "dessert_")
-    var desserts: MItemDessert? = null,
+//    @Embedded(prefix = "dessert_")
+//    var desserts: List<MItemDessert>? = null,
+//
+//    @Embedded(prefix = "drinks_")
+//    var drinks: List<MItemDrinks>? = null,
 
-    @Embedded(prefix = "drinks_")
-    var drinks: MItemDrinks? = null,
+    @ColumnInfo(name = "plats_")
+    var plats: MutableList<MItem>? = arrayListOf()
 
-    @Embedded(prefix = "plats_")
-    var plats: MItem? = null
 ){}
