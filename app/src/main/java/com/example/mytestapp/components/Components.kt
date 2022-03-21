@@ -15,6 +15,10 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.Snapshot
+import androidx.compose.runtime.snapshots.SnapshotMutableState
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.snapshots.SnapshotStateObserver
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -46,6 +50,7 @@ import com.example.mytestapp.model.MItemDrinks
 import com.example.mytestapp.model.MTable
 import com.example.mytestapp.navigation.RestoNavigation
 import com.example.mytestapp.navigation.RestoScreens
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.selects.whileSelect
 import java.util.*
 
@@ -288,25 +293,34 @@ fun itemCardPrice () {
     }
 }
 
-///////////funtion to display nameitem for cost
+///////////funtion to display nameitem for cost /////////////////////////////////////////////////////////////////
 
 @Composable
-fun ItemDisplayToCart (table: MTable ) {
+fun ItemDisplayToCart (tableItems:  SnapshotStateList<MItem>? ) {
     val scrollState = rememberScrollState()
+    var counter = 0
+
+    Log.d("", "listTableItemsBEFORE: $tableItems")
     Column(modifier = Modifier
         .fillMaxSize()
         .verticalScroll(scrollState)) {
         Column(modifier = Modifier.fillMaxSize()) {
-            for (item in table.plats!!)
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Row(modifier = Modifier.fillMaxWidth()
-                    .padding(start = 15.dp, end = 15.dp)) {
+            tableItems?.distinct()?.forEach { item ->
+                Log.d("", "ListTableItems: $item")
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 15.dp, end = 15.dp)
+                    ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(text = "${item.name}")
+                            Text(text = item.name + " x" + Collections.frequency(tableItems, item))
                         }
                         Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
-                            Text(text = "$${item.price}")
+                            Text(text = "$ ${item.price?.toInt()
+                                ?.times(Collections.frequency(tableItems, item))}")
                         }
+                    }
                 }
             }
         }
@@ -314,19 +328,61 @@ fun ItemDisplayToCart (table: MTable ) {
     }
 }
 
+/////////////////////////////
+
+//val state = rememberDismissState(
+//    confirmStateChange = {
+//        if (it == DismissValue.DismissedToStart) {
+//            items.remove(item)
+//        }
+//        true
+//    }
+//)
+//
+//SwipeToDismiss(
+//state = state,
+//background = {
+//    val color = when (state.dismissDirection) {
+//        DismissDirection.StartToEnd -> Color.Transparent
+//        DismissDirection.EndToStart -> Color.Red
+//        null -> Color.Transparent
+//    }
+//
+//    Box(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .background(color = color)
+//            .padding(8.dp)
+//    ) {
+//        Icon(
+//            imageVector = Icons.Default.Delete,
+//            contentDescription = "Delete",
+//            tint = Color.White,
+//            modifier = Modifier.align(Alignment.CenterEnd)
+//        )
+//    }
+//},
+//dismissContent = {
+//    SampleItems(item)
+//},
+//directions = setOf(DismissDirection.EndToStart)
+//)
+
 //////////////////////display lazy col test
 @Composable
 fun displayLazyCol (
-    itemsOrdered: List<Any>,
+    itemsOrdered: MutableList<MItem>?,
 //    onAddNote: (MItem) -> Unit,
 //    onRemoveNote: (MItem) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         LazyColumn{
-            items(itemsOrdered.size) {
-                index ->
-                itemRow(item = itemsOrdered[index], onCurrentItemClicked = {})
-                Log.d("lazycol", "displayLazyCol: $itemsOrdered")
+            if (itemsOrdered != null) {
+                items(itemsOrdered.size) {
+                        index ->
+                    itemRow(item = itemsOrdered[index], onCurrentItemClicked = {})
+                    Log.d("lazycol", "displayLazyCol: $itemsOrdered")
+                }
             }
 //            item(itemOrdered){ item ->
 //                itemRow(item = itemOrdered, onCurrentItemClicked = {})
@@ -346,7 +402,7 @@ fun displayLazyCol (
 @Composable
 fun itemRow(
     modifier: Modifier = Modifier,
-    item: Any,
+    item: MItem,
     onCurrentItemClicked: (Any) -> Unit) {
     Surface(
         modifier
@@ -360,11 +416,11 @@ fun itemRow(
             .padding(horizontal = 14.dp, vertical = 6.dp),
             horizontalAlignment = Alignment.Start) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = "${item}")
+                Text(text = "${item.name}")
                 Log.d("itemrow", "itemRow: ${item}")
             }
             Column(modifier = Modifier.weight(1f),) {
-                Text(text = "${item}")
+                Text(text = "${item.price}")
             }
 
         }

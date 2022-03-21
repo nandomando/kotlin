@@ -16,6 +16,11 @@ interface TableDataBaseDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(table: MTable)
+ /////////////////////////
+//    @Query(value = "SELECT * from tables_tbl where plats_")
+//    fun getPlats(): Flow<List<MItem>>
+
+
 ///////////////
 //
 //    @Insert(onConflict = OnConflictStrategy.REPLACE)

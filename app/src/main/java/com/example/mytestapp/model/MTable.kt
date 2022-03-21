@@ -1,9 +1,15 @@
 package com.example.mytestapp.model
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.lifecycle.MutableLiveData
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -26,6 +32,11 @@ data class MTable(
 //    var drinks: List<MItemDrinks>? = null,
 
     @ColumnInfo(name = "plats_")
-    var plats: MutableList<MItem>? = arrayListOf()
+    var plats: SnapshotStateList<MItem> = mutableStateListOf()
+
+//    var plats: MutableState<MutableList<MItem>>? = mutableStateOf(mutableStateListOf())
 
 ){}
+// var plats: MutableLiveData<MutableList<MItem>>? =  arrayListOf()
+///// esta es la buena ////
+////var plats: MutableList<MItem>? = arrayListOf()

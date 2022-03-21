@@ -43,15 +43,14 @@ fun Home(navController: NavController,
          tableViewModel: TableViewModel
 ){
     val tableList = tableViewModel.tableList.collectAsState().value
-//    val tableItemList = tableViewModel.tableItemList.collectAsState().value
     val drinksList = drinksViewModel.drinksList.collectAsState().value
     val dessertList = dessertViewModel.dessertList.collectAsState().value
     val itemsList = itemViewModel.itemList.collectAsState().value
 
-    var currentItem by remember { mutableStateOf( MItem())}
+
     var selectedTable by remember { mutableStateOf(MTable())}
 
-//    var selectedTableId by remember { mutableStateOf("") }
+    var totalPrice by remember { mutableStateOf( 0)}
 
     var expanded by remember { mutableStateOf(false) }
     var selectedTableText by remember { mutableStateOf("") }
@@ -80,24 +79,20 @@ fun Home(navController: NavController,
                         DropdownMenuItem(onClick = {
                             selectedTableText = table.number.toString()
                             expanded = false
-//                            selectedTableId = table.tableId.toString()
+
                             selectedTable = table
+
+                            //currentTableList = table.plats
                         }) {
-                            table.tableId
                             Text(text = table.number.toString())
-//                            val selectedTbl = produceState<MTable>(initialValue = MTable()) {
+//                            val selectedTbll = produceState<MTable>(initialValue = MTable()) {
 //                                value = table
 //                            }
-
-//                            Log.d("menu", "selectedtable:$selectedTable ")
                         }
                     }
                 }
-                //dropDownMenu(suggestions = tableList)
-
                 }
-            Log.d("", "after choosing: ${selectedTable.number}")
-            Log.d("", "after table string: ${selectedTable}")
+
 
             Column(modifier = Modifier
                 .weight(1f),
@@ -157,15 +152,17 @@ fun Home(navController: NavController,
                 VerticalScrollablePlatsComponent(itemsList){
                     // necesito pasar el item
                     Log.d("TAG", "verticalScrollItem:$it ")
-                    currentItem = it
-                    Log.d("", "afterpassing:$selectedTable ")
-//                    val currentTable = tableViewModel.getTableById(selectedTable.tableId.toString())
-//                    Log.d("getId", "currentTable: $currentTable")
-                    selectedTable.plats?.add(it)
-                    tableViewModel.updateTable(selectedTable)
+                    Log.d("", "BEFOREADDINGTable:$selectedTable ")
 
-                    Log.d("", "afteradding,Item: ${it}")
-                    Log.d("", "afteradding,table plats: ${selectedTable}")
+                    selectedTable.plats.add(it)
+                    tableViewModel.updateTable(selectedTable)
+                    selectedTable.plats.forEach{item ->
+                        var price = item.price?.toInt()
+
+                        if (price != null) {
+                            totalPrice += price
+                        }
+                    }
 
                 }
             }
@@ -194,9 +191,30 @@ fun Home(navController: NavController,
         }
 // Row items sended should be scrowlable
         Row(modifier = Modifier.weight(1f)) {
-            ItemDisplayToCart(selectedTable)
-            //displayLazyCol(currentItem)
 
+            Log.d("", "updating in other compose: $selectedTable")
+            ItemDisplayToCart(selectedTable.plats)
+            //displayLazyCol(selectedTable.plats)
+
+
+
+        }
+
+
+        ////////////////////////////total/////////////
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 15.dp, end = 15.dp)) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = "Total:")
+            }
+            Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
+                var tPrice = 0
+                selectedTable.plats.forEach { item ->
+                    tPrice += item.price?.toInt()!!
+                }
+                Text(text = "$ $tPrice")
+            }
         }
 /////////////////buttones///////////////////////
 
