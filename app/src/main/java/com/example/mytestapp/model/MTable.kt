@@ -25,18 +25,14 @@ data class MTable(
     @ColumnInfo(name = "client_id")
     var client_id: String? = null,
 
-//    @Embedded(prefix = "dessert_")
-//    var desserts: List<MItemDessert>? = null,
-//
-//    @Embedded(prefix = "drinks_")
-//    var drinks: List<MItemDrinks>? = null,
+    @ColumnInfo(name = "dessert_")
+    var desserts: SnapshotStateList<MItemDessert> = mutableStateListOf(),
+
+    @ColumnInfo(name = "drinks_")
+    var drinks: SnapshotStateList<MItemDrinks> = mutableStateListOf(),
 
     @ColumnInfo(name = "plats_")
     var plats: SnapshotStateList<MItem> = mutableStateListOf()
 
-//    var plats: MutableState<MutableList<MItem>>? = mutableStateOf(mutableStateListOf())
-
 ){}
-// var plats: MutableLiveData<MutableList<MItem>>? =  arrayListOf()
-///// esta es la buena ////
-////var plats: MutableList<MItem>? = arrayListOf()
+

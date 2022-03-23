@@ -1,10 +1,14 @@
 package com.example.mytestapp.screens.home
 
+import android.content.ClipData
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -16,6 +20,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
@@ -33,6 +38,7 @@ import com.example.mytestapp.viewModels.ItemViewModel
 import com.example.mytestapp.viewModels.TableViewModel
 import com.google.rpc.context.AttributeContext
 import io.grpc.internal.SharedResourceHolder
+import kotlin.math.roundToInt
 
 
 @Composable
@@ -50,7 +56,7 @@ fun Home(navController: NavController,
 
     var selectedTable by remember { mutableStateOf(MTable())}
 
-    var totalPrice by remember { mutableStateOf( 0)}
+    var totalPrice by remember { mutableStateOf( 0.0)}
 
     var expanded by remember { mutableStateOf(false) }
     var selectedTableText by remember { mutableStateOf("") }
@@ -82,7 +88,6 @@ fun Home(navController: NavController,
 
                             selectedTable = table
 
-                            //currentTableList = table.plats
                         }) {
                             Text(text = table.number.toString())
 //                            val selectedTbll = produceState<MTable>(initialValue = MTable()) {
@@ -157,7 +162,7 @@ fun Home(navController: NavController,
                     selectedTable.plats.add(it)
                     tableViewModel.updateTable(selectedTable)
                     selectedTable.plats.forEach{item ->
-                        var price = item.price?.toInt()
+                        val price = item.price?.toFloat()
 
                         if (price != null) {
                             totalPrice += price
@@ -170,11 +175,14 @@ fun Home(navController: NavController,
         if (checkedDessert.value) {
             Row(modifier = Modifier.weight(1f)) {
                 VerticalScrollableDessertComponent(dessertList){
-                    // necesito pasar el item
-                    Log.d("TAG", "verticalScrollDessert:$it ")
-                    //currentItem.add(it)
-                    //Log.d("", "dessert: ${currentItem}")
-
+                    selectedTable.desserts.add(it)
+                    tableViewModel.updateTable(selectedTable)
+                    selectedTable.desserts.forEach { item ->
+                        val price = item.price?.toFloat()
+                        if ( price != null) {
+                            totalPrice += price
+                        }
+                    }
                 }
             }
 
@@ -182,21 +190,21 @@ fun Home(navController: NavController,
         if (checkedDrinks.value) {
             Row(modifier = Modifier.weight(1f)) {
                 VerticalScrollableDrinkComponent(drinksList){
-                    // necesito pasar el item
-                    Log.d("TAG", "verticalScrollItem:$it ")
-                    //currentItem = it
-                   // currentItem.add(it)
+                    selectedTable.drinks.add(it)
+                    tableViewModel.updateTable(selectedTable)
+                    selectedTable.drinks.forEach { item ->
+                        val price = item.price?.toFloat()
+                        if ( price != null) {
+                            totalPrice += price
+                        }
+                    }
                 }
             }
         }
 // Row items sended should be scrowlable
         Row(modifier = Modifier.weight(1f)) {
 
-            Log.d("", "updating in other compose: $selectedTable")
-            ItemDisplayToCart(selectedTable.plats)
-            //displayLazyCol(selectedTable.plats)
-
-
+            ItemsDisplayToCart(selectedTable, tableViewModel)
 
         }
 
@@ -206,14 +214,20 @@ fun Home(navController: NavController,
             .fillMaxWidth()
             .padding(start = 15.dp, end = 15.dp)) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = "Total:")
+                Text(text = "Total:", fontWeight = FontWeight.Bold)
             }
             Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
-                var tPrice = 0
+                var tPrice = 0.0
                 selectedTable.plats.forEach { item ->
-                    tPrice += item.price?.toInt()!!
+                    tPrice += item.price?.toFloat()!!
                 }
-                Text(text = "$ $tPrice")
+                selectedTable.desserts.forEach { item ->
+                    tPrice += item.price?.toFloat()!!
+                }
+                selectedTable.drinks.forEach { item ->
+                    tPrice += item.price?.toFloat()!!
+                }
+                Text(text = "$ ${tPrice.toFloat()}", fontWeight = FontWeight.Bold )
             }
         }
 /////////////////buttones///////////////////////

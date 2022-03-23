@@ -19,4 +19,7 @@ data class MItemDessert(
 
     @ColumnInfo(name = "item_dessert_price")
     var price: String? = null,
+
+    @ColumnInfo(name = "item_dessert_boolean")
+    var send: Boolean = false
 ){}

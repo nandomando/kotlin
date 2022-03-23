@@ -4,28 +4,14 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.room.TypeConverter
 import com.example.mytestapp.model.MItem
+import com.example.mytestapp.model.MItemDessert
+import com.example.mytestapp.model.MItemDrinks
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.MutableStateFlow
 
 
 class ListModelConverter {
-
-//    @TypeConverter
-//    fun stringToItems(json: String?): MutableState<MutableList<MItem>?> {
-//        val gson = Gson()
-//        val type = object :
-//            TypeToken<MutableState<MutableList<MItem?>>?>() {}.type
-//        return gson.fromJson<MutableState<MutableList<MItem>?>>(json, type)
-//    }
-//
-//    @TypeConverter
-//    fun itemsToString(list: MutableState<MutableList<MItem?>>?): String? {
-//        val gson = Gson()
-//        val type = object :
-//            TypeToken<MutableState<MutableList<MItem?>?>>() {}.type
-//        return gson.toJson(list, type)
-//    }
 
     @TypeConverter
 fun stringToItems(json: String?): SnapshotStateList<MItem>? {
@@ -42,22 +28,38 @@ fun itemsToString(list: SnapshotStateList<MItem?>?): String? {
         TypeToken<SnapshotStateList<MItem?>?>() {}.type
     return gson.toJson(list, type)
 }
+/////////////////////////DESSERT////////////////////////
+    @TypeConverter
+    fun stringToDessert(json: String?): SnapshotStateList<MItemDessert>? {
+        val gson = Gson()
+        val type = object :
+            TypeToken< SnapshotStateList<MItemDessert?>?>() {}.type
+        return gson.fromJson<SnapshotStateList<MItemDessert>>(json, type)
+    }
 
-//    @TypeConverter
-//    fun stringToItems(json: String?): MutableStateFlow<List<MItem>>? {
-//        val gson = Gson()
-//        val type = object :
-//            TypeToken<MutableStateFlow<List<MItem?>?>>() {}.type
-//        return gson.fromJson<MutableStateFlow<List<MItem>>>(json, type)
-//    }
-//
-//    @TypeConverter
-//    fun itemsToString(list: MutableStateFlow<List<MItem?>?>): String? {
-//        val gson = Gson()
-//        val type = object :
-//            TypeToken<MutableStateFlow<List<MItem?>?>>() {}.type
-//        return gson.toJson(list, type)
-//    }
+    @TypeConverter
+    fun dessertToString(list: SnapshotStateList<MItemDessert?>?): String? {
+        val gson = Gson()
+        val type = object :
+            TypeToken<SnapshotStateList<MItemDessert?>?>() {}.type
+        return gson.toJson(list, type)
+    }
+/////////////////////////////DRINKS////////////////////////////////
+    @TypeConverter
+    fun stringToDrinks(json: String?): SnapshotStateList<MItemDrinks>? {
+        val gson = Gson()
+        val type = object :
+            TypeToken< SnapshotStateList<MItemDrinks?>?>() {}.type
+        return gson.fromJson<SnapshotStateList<MItemDrinks>>(json, type)
+    }
+
+    @TypeConverter
+    fun drinksToString(list: SnapshotStateList<MItemDrinks?>?): String? {
+        val gson = Gson()
+        val type = object :
+            TypeToken<SnapshotStateList<MItemDrinks?>?>() {}.type
+        return gson.toJson(list, type)
+    }
 
 
 /////////////////////////////////////////////////////////////////////
@@ -83,4 +85,4 @@ fun itemsToString(list: SnapshotStateList<MItem?>?): String? {
 //    }
 }
 
-//////////////////////////this one works////
+

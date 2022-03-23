@@ -1,6 +1,7 @@
 package com.example.mytestapp.components
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -50,6 +51,8 @@ import com.example.mytestapp.model.MItemDrinks
 import com.example.mytestapp.model.MTable
 import com.example.mytestapp.navigation.RestoNavigation
 import com.example.mytestapp.navigation.RestoScreens
+import com.example.mytestapp.screens.tables.InputView
+import com.example.mytestapp.viewModels.TableViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.selects.whileSelect
 import java.util.*
@@ -265,60 +268,176 @@ fun ListDrinksCard(drink: MItemDrinks,
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-/////////////////////////////////////card to display item and price
-@Composable
-fun itemCardPrice () {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(text = "")
-            }
-            Column(modifier = Modifier.weight(1f),) {
-                Text(text = "")
-            }
-        }
-    }
-}
-
 ///////////funtion to display nameitem for cost /////////////////////////////////////////////////////////////////
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ItemDisplayToCart (tableItems:  SnapshotStateList<MItem>? ) {
+fun ItemsDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel ) {
+
     val scrollState = rememberScrollState()
-    var counter = 0
+
+    var currentItem  by remember { mutableStateOf(MItem())}
+    var currentDessert by remember { mutableStateOf(MItemDessert())}
+    var currentDrink by remember { mutableStateOf(MItemDrinks())}
+
+
+    val inputDialogState = remember { mutableStateOf(false) }
+    val inputDialogStateDessert = remember { mutableStateOf(false) }
+    val inputDialogStateDrinks = remember { mutableStateOf(false) }
+
+
+
+    if (inputDialogState.value) {
+        AlertDialog(
+            onDismissRequest = {
+                inputDialogState.value = false
+            },
+            text = { DeleteViewPlate(currentItem) },
+
+            dismissButton = {
+                Button(onClick = { inputDialogState.value = false }) {
+                    Text("Cancel")
+                }
+            },
+            confirmButton = {
+                Button(onClick = {
+                    tableItems.plats.remove(currentItem)
+                    tableViewModel.updateTable(tableItems)
+                    inputDialogState.value = false }) {
+                    Text("Delete")
+                }
+            }, modifier = Modifier.padding(vertical = 8.dp)
+        )
+    }
+/////////////////////////////////POP UP DELETE DESSERTS/////////////
+    if (inputDialogStateDessert.value) {
+        AlertDialog(
+            onDismissRequest = {
+                inputDialogStateDessert.value = false
+            },
+            text = { DeleteViewDessert(currentDessert) },
+
+            dismissButton = {
+                Button(onClick = { inputDialogStateDessert.value = false }) {
+                    Text("Cancel")
+                }
+            },
+            confirmButton = {
+                Button(onClick = {
+
+                    tableItems.desserts.remove(currentDessert)
+                    tableViewModel.updateTable(tableItems)
+
+                    inputDialogStateDessert.value = false }) {
+                    Text("Delete")
+                }
+            }, modifier = Modifier.padding(vertical = 8.dp)
+        )
+    }
+    //////////////////////////////////POP UP DELETE DRINKS////////////
+
+    if (inputDialogStateDrinks.value) {
+        AlertDialog(
+            onDismissRequest = {
+                inputDialogStateDrinks.value = false
+            },
+            text = { DeleteViewDrink(currentDrink) },
+
+            dismissButton = {
+                Button(onClick = { inputDialogStateDrinks.value = false }) {
+                    Text("Cancel")
+                }
+            },
+            confirmButton = {
+                Button(onClick = {
+                    tableItems.drinks.remove(currentDrink)
+                    tableViewModel.updateTable(tableItems)
+
+                    inputDialogStateDrinks.value = false }) {
+                    Text("Delete")
+                }
+            }, modifier = Modifier.padding(vertical = 8.dp)
+        )
+    }
 
     Log.d("", "listTableItemsBEFORE: $tableItems")
+
     Column(modifier = Modifier
         .fillMaxSize()
         .verticalScroll(scrollState)) {
         Column(modifier = Modifier.fillMaxSize()) {
-            tableItems?.distinct()?.forEach { item ->
-                Log.d("", "ListTableItems: $item")
-                Column(modifier = Modifier.fillMaxWidth()) {
+            tableItems.plats?.distinct()?.forEach { item ->
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        currentItem = item
+                        inputDialogState.value = true
+                    }
+                ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 15.dp, end = 15.dp)
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(text = item.name + " x" + Collections.frequency(tableItems, item))
+                            Text(text = item.name + " x" + Collections.frequency(tableItems.plats, item))
                         }
                         Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
-                            Text(text = "$ ${item.price?.toInt()
-                                ?.times(Collections.frequency(tableItems, item))}")
+                            Text(text = "$ ${item.price?.toFloat()
+                                ?.times(Collections.frequency(tableItems.plats, item))}")
+                        }
+                    }
+                }
+            }
+        }
+        ////////////////dessert///
+        Column(modifier = Modifier.fillMaxSize()) {
+            tableItems.desserts?.distinct()?.forEach { item ->
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        currentDessert = item
+                        inputDialogStateDessert.value = true
+                    }
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 15.dp, end = 15.dp)
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(text = item.name + " x" + Collections.frequency(tableItems.desserts, item))
+                        }
+                        Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
+                            Text(text = "$ ${item.price?.toFloat()
+                                ?.times(Collections.frequency(tableItems.desserts, item))}")
+                        }
+                    }
+                }
+            }
+        }
+
+        ////////////////drinks///
+        Column(modifier = Modifier.fillMaxSize()) {
+            tableItems.drinks?.distinct()?.forEach { item ->
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        currentDrink = item
+                        inputDialogStateDrinks.value = true
+                    }
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 15.dp, end = 15.dp)
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(text = item.name + " x" + Collections.frequency(tableItems.drinks, item))
+                        }
+                        Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
+                            Text(text = "$ ${item.price?.toFloat()
+                                ?.times(Collections.frequency(tableItems.drinks, item))}")
                         }
                     }
                 }
@@ -328,107 +447,294 @@ fun ItemDisplayToCart (tableItems:  SnapshotStateList<MItem>? ) {
     }
 }
 
-/////////////////////////////
+////////////////////////////////////////////////////////////
 
-//val state = rememberDismissState(
-//    confirmStateChange = {
-//        if (it == DismissValue.DismissedToStart) {
-//            items.remove(item)
-//        }
-//        true
-//    }
-//)
+//val inputDialogState = remember { mutableStateOf(false) }
 //
-//SwipeToDismiss(
-//state = state,
-//background = {
-//    val color = when (state.dismissDirection) {
-//        DismissDirection.StartToEnd -> Color.Transparent
-//        DismissDirection.EndToStart -> Color.Red
-//        null -> Color.Transparent
+//if (inputDialogState.value) {
+//    deleteDialog(title = null, state = inputDialogState) {
+//        DeleteView(tableViewModel = tableViewModel)
 //    }
-//
-//    Box(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .background(color = color)
-//            .padding(8.dp)
-//    ) {
-//        Icon(
-//            imageVector = Icons.Default.Delete,
-//            contentDescription = "Delete",
-//            tint = Color.White,
-//            modifier = Modifier.align(Alignment.CenterEnd)
-//        )
-//    }
-//},
-//dismissContent = {
-//    SampleItems(item)
-//},
-//directions = setOf(DismissDirection.EndToStart)
-//)
+//}
 
-//////////////////////display lazy col test
+////////////////////////////////////DELETE PLATE NAME /////////////////////
 @Composable
-fun displayLazyCol (
-    itemsOrdered: MutableList<MItem>?,
-//    onAddNote: (MItem) -> Unit,
-//    onRemoveNote: (MItem) -> Unit
-) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        LazyColumn{
-            if (itemsOrdered != null) {
-                items(itemsOrdered.size) {
-                        index ->
-                    itemRow(item = itemsOrdered[index], onCurrentItemClicked = {})
-                    Log.d("lazycol", "displayLazyCol: $itemsOrdered")
-                }
-            }
-//            item(itemOrdered){ item ->
-//                itemRow(item = itemOrdered, onCurrentItemClicked = {})
-////                itemRow(item = ,
-////                    //onNoteClicked = { onRemoveNote(it) }
-////             )
+fun DeleteViewPlate(currentItem: MItem) {
+
+    val number = remember { mutableStateOf("") }
+
+//    val change: (String) -> Unit = { it ->
+//        number.value = it  // it is supposed to be this
+//    }
+
+    Column(
+        Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Column(
+            Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Your about to Delete: 1 ${currentItem.name} ", fontSize = 16.sp, color = Color.Red)
+            Divider()
+            //val context = LocalContext.current
+
+//            Column() {
+//
+//                TextField(
+//                    value = number.value,
+//                    modifier = Modifier.padding(
+//                        top = 9.dp,
+//                        bottom = 8.dp
+//                    ),
+//                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+//                    onValueChange = change,
+//                    colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
+//                    label = { Text(text = "") }
+//
+//                )
+//
+////                itemButton(modifier = Modifier.fillMaxWidth(),
+////                    text = "Save",
+////                    onClick = {
+////                        if (number.value.isNotEmpty()) {
+////                            tableViewModel.addTable(
+////                                MTable(
+////                                    number = number.value,
+////                                )
+////                            )
+////                            Toast.makeText(
+////                                context, "Table Added",
+////                                Toast.LENGTH_SHORT
+////                            ).show()
+////                        }
+////                    })
+//
 //            }
         }
     }
 }
+
+//////////////////////////////////////DELETE DESSERT NAME /////////////////////
+
+
+@Composable
+fun DeleteViewDessert(currentItem: MItemDessert) {
+
+    val number = remember { mutableStateOf("") }
+
+//    val change: (String) -> Unit = { it ->
+//        number.value = it  // it is supposed to be this
+//    }
+
+    Column(
+        Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Column(
+            Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Your about to Delete: 1 ${currentItem.name} ", fontSize = 16.sp, color = Color.Red)
+            Divider()
+            //val context = LocalContext.current
+
+//            Column() {
+//
+//                TextField(
+//                    value = number.value,
+//                    modifier = Modifier.padding(
+//                        top = 9.dp,
+//                        bottom = 8.dp
+//                    ),
+//                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+//                    onValueChange = change,
+//                    colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
+//                    label = { Text(text = "") }
+//
+//                )
+//
+////                itemButton(modifier = Modifier.fillMaxWidth(),
+////                    text = "Save",
+////                    onClick = {
+////                        if (number.value.isNotEmpty()) {
+////                            tableViewModel.addTable(
+////                                MTable(
+////                                    number = number.value,
+////                                )
+////                            )
+////                            Toast.makeText(
+////                                context, "Table Added",
+////                                Toast.LENGTH_SHORT
+////                            ).show()
+////                        }
+////                    })
+//
+//            }
+        }
+    }
+}
+//////////////////////////////////////DELETE DRINKS NAME ///////////////
+
+
+@Composable
+fun DeleteViewDrink(currentItem: MItemDrinks) {
+
+    val number = remember { mutableStateOf("") }
+
+//    val change: (String) -> Unit = { it ->
+//        number.value = it  // it is supposed to be this
+//    }
+
+    Column(
+        Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Column(
+            Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Your about to Delete: 1 ${currentItem.name} ", fontSize = 16.sp, color = Color.Red)
+            Divider()
+            //val context = LocalContext.current
+
+//            Column() {
+//
+//                TextField(
+//                    value = number.value,
+//                    modifier = Modifier.padding(
+//                        top = 9.dp,
+//                        bottom = 8.dp
+//                    ),
+//                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+//                    onValueChange = change,
+//                    colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
+//                    label = { Text(text = "") }
+//
+//                )
+//
+////                itemButton(modifier = Modifier.fillMaxWidth(),
+////                    text = "Save",
+////                    onClick = {
+////                        if (number.value.isNotEmpty()) {
+////                            tableViewModel.addTable(
+////                                MTable(
+////                                    number = number.value,
+////                                )
+////                            )
+////                            Toast.makeText(
+////                                context, "Table Added",
+////                                Toast.LENGTH_SHORT
+////                            ).show()
+////                        }
+////                    })
+//
+//            }
+        }
+    }
+}
+
+//@Composable
+//fun deleteDialog(title: String?,
+//                 state: MutableState<Boolean>,
+//                 tableViewModel: TableViewModel,
+//                 content: @Composable (() -> Unit)? = null
+//) {
+//    AlertDialog(
+//        onDismissRequest = {
+//            state.value = false
+//        },
+//        title = title?.let {
+//            {
+//                Column(
+//                    Modifier.fillMaxWidth(),
+//                    verticalArrangement = Arrangement.spacedBy(8.dp)
+//                ) {
+//                    Text(text = title)
+//                    Divider(modifier = Modifier.padding(bottom = 8.dp))
+//                }
+//            }
+//        },
+//        text = content,
+//        dismissButton = {
+//            Button(onClick = { state.value = false }) {
+//                Text("Cancel")
+//            }
+//        },
+//        confirmButton = {
+//            Button(onClick = {
+//                //tableViewModel.updateTable()
+//                state.value = false }) {
+//                Text("Delete")
+//            }
+//        }, modifier = Modifier.padding(vertical = 8.dp)
+//    )
+//}
+
+//////////////////////display lazy col test
+//@Composable
+//fun displayLazyCol (
+//    itemsOrdered: MutableList<MItem>?,
+////    onAddNote: (MItem) -> Unit,
+////    onRemoveNote: (MItem) -> Unit
+//) {
+//    Column(modifier = Modifier.fillMaxSize()) {
+//        LazyColumn{
+//            if (itemsOrdered != null) {
+//                items(itemsOrdered.size) {
+//                        index ->
+//                    itemRow(item = itemsOrdered[index], onCurrentItemClicked = {})
+//                    Log.d("lazycol", "displayLazyCol: $itemsOrdered")
+//                }
+//            }
+////            item(itemOrdered){ item ->
+////                itemRow(item = itemOrdered, onCurrentItemClicked = {})
+//////                itemRow(item = ,
+//////                    //onNoteClicked = { onRemoveNote(it) }
+//////             )
+////            }
+//        }
+//    }
+//}
 
 
 
 
 //////////item row card
 
-@Composable
-fun itemRow(
-    modifier: Modifier = Modifier,
-    item: MItem,
-    onCurrentItemClicked: (Any) -> Unit) {
-    Surface(
-        modifier
-            .padding(4.dp)
-            .clip(RoundedCornerShape(topEnd = 33.dp, bottomStart = 33.dp))
-            .fillMaxWidth(),
-        color = Color(0xFFDFE6EB),
-        elevation = 6.dp) {
-        Column(modifier
-            .clickable { onCurrentItemClicked(item) }
-            .padding(horizontal = 14.dp, vertical = 6.dp),
-            horizontalAlignment = Alignment.Start) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(text = "${item.name}")
-                Log.d("itemrow", "itemRow: ${item}")
-            }
-            Column(modifier = Modifier.weight(1f),) {
-                Text(text = "${item.price}")
-            }
-
-        }
-
-
-    }
-
-}
+//@Composable
+//fun itemRow(
+//    modifier: Modifier = Modifier,
+//    item: MItem,
+//    onCurrentItemClicked: (Any) -> Unit) {
+//    Surface(
+//        modifier
+//            .padding(4.dp)
+//            .clip(RoundedCornerShape(topEnd = 33.dp, bottomStart = 33.dp))
+//            .fillMaxWidth(),
+//        color = Color(0xFFDFE6EB),
+//        elevation = 6.dp) {
+//        Column(modifier
+//            .clickable { onCurrentItemClicked(item) }
+//            .padding(horizontal = 14.dp, vertical = 6.dp),
+//            horizontalAlignment = Alignment.Start) {
+//            Column(modifier = Modifier.weight(1f)) {
+//                Text(text = "${item.name}")
+//                Log.d("itemrow", "itemRow: ${item}")
+//            }
+//            Column(modifier = Modifier.weight(1f),) {
+//                Text(text = "${item.price}")
+//            }
+//
+//        }
+//
+//
+//    }
+//
+//}
 
 @ExperimentalComposeUiApi
 @Composable
@@ -568,3 +874,85 @@ fun MultiToggleButton(
 
 fun String.toCapital(): String {
     return this.lowercase().replaceFirstChar { it.titlecase(Locale.getDefault())} }
+
+//////////////////////////
+
+
+
+////////////////////////////////swipeable//////////////
+//
+//@OptIn(ExperimentalMaterialApi::class)
+//@Composable
+//fun ItemDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel ) {
+//    val scrollState = rememberScrollState()
+//
+//    Log.d("", "listTableItemsBEFORE: $tableItems")
+//    Column(modifier = Modifier
+//        .fillMaxSize()
+//        .verticalScroll(scrollState)) {
+//        Column(modifier = Modifier.fillMaxSize()) {
+//            tableItems.plats?.distinct()?.forEach { item ->
+//
+//                val state = rememberDismissState(
+//                    confirmStateChange = {
+//                        if (it == DismissValue.DismissedToStart) {
+//                            tableItems.plats.remove(item)
+//                            tableViewModel.updateTable(tableItems)
+//                        }
+//                        true
+//                    }
+//                )
+//
+//                SwipeToDismiss(
+//                    state = state,
+//                    background = {
+//                        val color = when (state.dismissDirection) {
+//                            DismissDirection.StartToEnd -> Color.Transparent
+//                            DismissDirection.EndToStart -> Color.Red
+//                            null -> Color.Transparent
+//                        }
+//
+//                        Box(
+//                            modifier = Modifier
+//                                .fillMaxSize()
+//                                .background(color = color)
+//                                .padding(8.dp)
+//                        ) {
+//                            Icon(
+//                                imageVector = Icons.Default.Delete,
+//                                contentDescription = "Delete",
+//                                tint = Color.White,
+//                                modifier = Modifier.align(Alignment.CenterEnd)
+//                            )
+//                        }
+//                    },
+//                    dismissContent = {
+//                        // item
+//                        Column(modifier = Modifier.fillMaxWidth()) {
+//                            Row(
+//                                modifier = Modifier
+//                                    .fillMaxWidth()
+//                                    .padding(start = 15.dp, end = 15.dp)
+//                            ) {
+//                                Column(modifier = Modifier.weight(1f)) {
+//                                    Text(text = item.name + " x" + Collections.frequency(tableItems.plats, item))
+//                                }
+//                                Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
+//                                    Text(text = "$ ${item.price?.toInt()
+//                                        ?.times(Collections.frequency(tableItems.plats, item))}")
+//                                }
+//                            }
+//                        }
+//
+//                    },
+//                    directions = setOf(DismissDirection.EndToStart)
+//                )
+//
+//                Log.d("", "ListTableItems: $item")
+//
+//
+//            }
+//        }
+//
+//    }
+//}

@@ -19,6 +19,9 @@ data class MItem(
 
     @ColumnInfo(name = "item_price")
     var price: String? = null,
+
+    @ColumnInfo(name = "item_boolean")
+    var send: Boolean = false
 ) {}
 
 
