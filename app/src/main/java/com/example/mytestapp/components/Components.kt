@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -153,7 +154,8 @@ fun PasswordVisibility(passwordVisibility: MutableState<Boolean>) {
 @Preview
 @Composable
 fun BottomNavBar(navController: NavController = NavController(context = LocalContext.current)) {
-    Row(modifier = Modifier. fillMaxWidth()
+    Row(modifier = Modifier
+        .fillMaxWidth()
         .padding(bottom = 0.dp)
         .height(28.dp),) {
         Column(modifier = Modifier.weight(1f),
@@ -162,9 +164,11 @@ fun BottomNavBar(navController: NavController = NavController(context = LocalCon
             Icon(
                 imageVector = Icons.Filled.Home,
                 contentDescription = "home",
-                modifier = Modifier.clickable {
-                    navController.navigate(RestoScreens.RestoHomeScreen.name)
-                } .size(28.dp)
+                modifier = Modifier
+                    .clickable {
+                        navController.navigate(RestoScreens.RestoHomeScreen.name)
+                    }
+                    .size(28.dp)
             )
         }
         Column(modifier = Modifier.weight(1f),
@@ -172,9 +176,11 @@ fun BottomNavBar(navController: NavController = NavController(context = LocalCon
             Icon(
                 imageVector = Icons.Filled.Menu,
                 contentDescription = "Tables",
-                modifier = Modifier.clickable {
-                    navController.navigate(RestoScreens.TablesScreen.name)
-                } .size(28.dp)
+                modifier = Modifier
+                    .clickable {
+                        navController.navigate(RestoScreens.TablesScreen.name)
+                    }
+                    .size(28.dp)
             )
         }
         Column(modifier = Modifier.weight(1f),
@@ -182,9 +188,11 @@ fun BottomNavBar(navController: NavController = NavController(context = LocalCon
             Icon(
                 imageVector = Icons.Filled.Settings,
                 contentDescription = "Settings",
-                modifier = Modifier.clickable {
-                    navController.navigate(RestoScreens.RestoSettingsScreen.name)
-                } .size(28.dp)
+                modifier = Modifier
+                    .clickable {
+                        navController.navigate(RestoScreens.RestoSettingsScreen.name)
+                    }
+                    .size(28.dp)
             )
         }
 
@@ -370,6 +378,16 @@ fun ItemsDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel) {
     Column(modifier = Modifier
         .fillMaxSize()
         .verticalScroll(scrollState)) {
+
+
+        Row(modifier = Modifier.fillMaxWidth()
+            .padding(start = 15.dp, end = 15.dp)
+        ) {
+            Column(modifier = Modifier, horizontalAlignment = Alignment.Start ) {
+                Text(text = "Plates", fontWeight = FontWeight.Bold)
+            }
+        }
+
         Column(modifier = Modifier.fillMaxSize()) {
             tableItems.plats?.distinct()?.forEach { item ->
 
@@ -399,6 +417,16 @@ fun ItemsDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel) {
                 }
             }
         }
+
+            Row(modifier = Modifier.fillMaxWidth()
+                .padding(start = 15.dp, end = 15.dp)
+            ) {
+                Column(modifier = Modifier, horizontalAlignment = Alignment.Start ) {
+                    Text(text = "Desserts", fontWeight = FontWeight.Bold)
+                }
+            }
+
+
         ////////////////dessert///
         Column(modifier = Modifier.fillMaxSize()) {
             tableItems.desserts?.distinct()?.forEach { item ->
@@ -429,6 +457,17 @@ fun ItemsDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel) {
                 }
             }
         }
+
+            Row(modifier = Modifier.fillMaxWidth()
+                .padding(start = 15.dp, end = 15.dp)
+            ) {
+                Column(modifier = Modifier, horizontalAlignment = Alignment.Start ) {
+                    Text(text = "Drinks", fontWeight = FontWeight.Bold)
+                }
+            }
+
+
+
 
         ////////////////drinks///
         Column(modifier = Modifier.fillMaxSize()) {

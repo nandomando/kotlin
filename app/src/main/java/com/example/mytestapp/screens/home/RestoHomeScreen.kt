@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -238,25 +239,32 @@ fun Home(navController: NavController,
 /////////////////buttones///////////////////////
 
         Row(modifier = Modifier.padding(start = 5.dp, end = 5.dp)) {
-            TextButton(onClick = {
+            OutlinedButton(onClick = {
 
                 selectedTable.plats.removeAll(selectedTable.plats)
                 selectedTable.desserts.removeAll(selectedTable.desserts)
                 selectedTable.drinks.removeAll(selectedTable.drinks)
                 tableViewModel.updateTable(selectedTable)
             }, modifier = Modifier
-                .weight(1f)
-                .background(color = MaterialTheme.colors.secondary),
-                elevation = ButtonDefaults.elevation(),
+                .weight(1f),
+                border = BorderStroke(2.dp, Color.Green),
+                //.background(color = MaterialTheme.colors.secondary),
+                shape = RoundedCornerShape(50),
+//                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.secondary)
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Green)
+
+//                elevation = ButtonDefaults.elevation(),
                 //border = BorderStroke(2.dp, color = MaterialTheme.colors.primary),
             ) {
-                Text(text = "Paye", color = Color.Black)
+                Text(text = "Paye",
+//                    color = Color.Black
+                )
             }
 
 
             Spacer(modifier = Modifier.padding(2.dp))
 
-            TextButton(onClick = {
+            OutlinedButton(onClick = {
 
                 val sendedPlatsList = mutableStateListOf<MItem>()
                 selectedTable.plats.forEach { item ->
@@ -280,13 +288,19 @@ fun Home(navController: NavController,
                 tableViewModel.updateTable(selectedTable)
 
             }, modifier = Modifier
-                .weight(1f)
-                .background(color = MaterialTheme.colors.primary),
-                elevation = ButtonDefaults.elevation(),
+                .weight(1f),
+//                .background(color = MaterialTheme.colors.primary),
+                shape = RoundedCornerShape(50),
+                border = BorderStroke(2.dp, Color.Blue),
+
+//                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.primary)
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Blue)
+
+//                elevation = ButtonDefaults.elevation(),
                // border = BorderStroke(2.dp, color = MaterialTheme.colors.secondary),
             ) {
                 Text(text = "Send",
-                    color = Color.Black
+//                    color = Color.Black
                 )
             }
         }        
