@@ -22,4 +22,5 @@ data class MItemDrinks(
 
     @ColumnInfo(name = "item_drinks_boolean")
     var send: Boolean = false
+
 ){}

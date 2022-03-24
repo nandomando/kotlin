@@ -149,19 +149,22 @@ fun PasswordVisibility(passwordVisibility: MutableState<Boolean>) {
 
 }
 
-///////////////////////////////////////////////my test of bottom nav bar
-
+/////////////////////////////////////////////// Bottom Nav Bar///////////////////////////////////////////
+@Preview
 @Composable
 fun BottomNavBar(navController: NavController = NavController(context = LocalContext.current)) {
-    Row(modifier = Modifier. fillMaxWidth(),) {
+    Row(modifier = Modifier. fillMaxWidth()
+        .padding(bottom = 0.dp)
+        .height(28.dp),) {
         Column(modifier = Modifier.weight(1f),
+            //.padding(bottom = 0.dp),
             horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(
                 imageVector = Icons.Filled.Home,
                 contentDescription = "home",
                 modifier = Modifier.clickable {
                     navController.navigate(RestoScreens.RestoHomeScreen.name)
-                }
+                } .size(28.dp)
             )
         }
         Column(modifier = Modifier.weight(1f),
@@ -171,7 +174,7 @@ fun BottomNavBar(navController: NavController = NavController(context = LocalCon
                 contentDescription = "Tables",
                 modifier = Modifier.clickable {
                     navController.navigate(RestoScreens.TablesScreen.name)
-                }
+                } .size(28.dp)
             )
         }
         Column(modifier = Modifier.weight(1f),
@@ -181,7 +184,7 @@ fun BottomNavBar(navController: NavController = NavController(context = LocalCon
                 contentDescription = "Settings",
                 modifier = Modifier.clickable {
                     navController.navigate(RestoScreens.RestoSettingsScreen.name)
-                }
+                } .size(28.dp)
             )
         }
 
@@ -272,7 +275,7 @@ fun ListDrinksCard(drink: MItemDrinks,
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ItemsDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel ) {
+fun ItemsDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel) {
 
     val scrollState = rememberScrollState()
 
@@ -284,6 +287,8 @@ fun ItemsDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel ) {
     val inputDialogState = remember { mutableStateOf(false) }
     val inputDialogStateDessert = remember { mutableStateOf(false) }
     val inputDialogStateDrinks = remember { mutableStateOf(false) }
+
+
 
 
 
@@ -367,7 +372,11 @@ fun ItemsDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel ) {
         .verticalScroll(scrollState)) {
         Column(modifier = Modifier.fillMaxSize()) {
             tableItems.plats?.distinct()?.forEach { item ->
+
+                val columnColor = if (item.send) Color.Blue else Color.White
+
                 Column(modifier = Modifier
+                    .background(color = columnColor)
                     .fillMaxWidth()
                     .clickable {
                         currentItem = item
@@ -393,7 +402,11 @@ fun ItemsDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel ) {
         ////////////////dessert///
         Column(modifier = Modifier.fillMaxSize()) {
             tableItems.desserts?.distinct()?.forEach { item ->
+
+                val columnColor = if (item.send) Color.Blue else Color.White
+
                 Column(modifier = Modifier
+                    .background(color = columnColor)
                     .fillMaxWidth()
                     .clickable {
                         currentDessert = item
@@ -419,13 +432,19 @@ fun ItemsDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel ) {
 
         ////////////////drinks///
         Column(modifier = Modifier.fillMaxSize()) {
-            tableItems.drinks?.distinct()?.forEach { item ->
-                Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        currentDrink = item
-                        inputDialogStateDrinks.value = true
-                    }
+            tableItems.drinks.distinct()
+                .forEach { item ->
+
+                val columnColor = if (item.send) Color.Blue else Color.White
+
+
+                    Column(modifier = Modifier
+                        .background(color = columnColor)
+                        .fillMaxWidth()
+                        .clickable {
+                            currentDrink = item
+                            inputDialogStateDrinks.value = true
+                        }
                 ) {
                     Row(
                         modifier = Modifier
@@ -443,7 +462,42 @@ fun ItemsDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel ) {
                 }
             }
         }
-
+        //////////////////////////test/////////////////////not send drinks
+//        Column(modifier = Modifier.fillMaxSize()) {
+//            tableItems.drinks
+//                .forEach { item ->
+//
+//                    Log.d("list", "ItemsDisplayToCart: $item")
+//                    val columnColor = if (item.send) Color.Blue else Color.White
+//
+//                    if (!item.send){
+//                        Column(modifier = Modifier
+//                            .background(color = columnColor)
+//                            .fillMaxWidth()
+//                            .clickable {
+//                                currentDrink = item
+//                                inputDialogStateDrinks.value = true
+//                            }
+//                        ) {
+//                            Row(
+//                                modifier = Modifier
+//                                    .fillMaxWidth()
+//                                    .padding(start = 15.dp, end = 15.dp)
+//                            ) {
+//                                Column(modifier = Modifier.weight(1f)) {
+//                                    Text(text = item.name + " x" + Collections.frequency(tableItems.drinks, item))
+//                                }
+//                                Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
+//                                    Text(text = "$ ${item.price?.toFloat()
+//                                        ?.times(Collections.frequency(tableItems.drinks, item))}")
+//                                }
+//                            }
+//                        }
+//                    }
+//                    }
+//
+//        }
+////////////////////////
     }
 }
 

@@ -2,13 +2,11 @@ package com.example.mytestapp.screens.home
 
 import android.content.ClipData
 import android.util.Log
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -25,6 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavController
+import androidx.room.ColumnInfo
 import coil.compose.ImagePainter
 import com.example.mytestapp.components.*
 import com.example.mytestapp.data.TableDataBaseDao
@@ -38,6 +37,7 @@ import com.example.mytestapp.viewModels.ItemViewModel
 import com.example.mytestapp.viewModels.TableViewModel
 import com.google.rpc.context.AttributeContext
 import io.grpc.internal.SharedResourceHolder
+import java.util.*
 import kotlin.math.roundToInt
 
 
@@ -64,6 +64,11 @@ fun Home(navController: NavController,
     val checkedPlats = remember { mutableStateOf(true)}
     val checkedDessert = remember { mutableStateOf(false)}
     val checkedDrinks = remember { mutableStateOf(false)}
+
+    val sended = remember { mutableStateOf(true)}
+
+
+
 
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -213,11 +218,11 @@ fun Home(navController: NavController,
         Row(modifier = Modifier
             .fillMaxWidth()
             .padding(start = 15.dp, end = 15.dp)) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(text = "Total:", fontWeight = FontWeight.Bold)
-            }
+//            Column(modifier = Modifier.weight(1f)) {
+//                Text(text = "Total:", fontWeight = FontWeight.Bold)
+//            }
             Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
-                var tPrice = 0.0
+                var tPrice = 0.00
                 selectedTable.plats.forEach { item ->
                     tPrice += item.price?.toFloat()!!
                 }
@@ -227,17 +232,62 @@ fun Home(navController: NavController,
                 selectedTable.drinks.forEach { item ->
                     tPrice += item.price?.toFloat()!!
                 }
-                Text(text = "$ ${tPrice.toFloat()}", fontWeight = FontWeight.Bold )
+                Text(text = "Total:  $ ${tPrice.toFloat()}", fontWeight = FontWeight.Bold )
             }
         }
 /////////////////buttones///////////////////////
 
-        Row() {
-            TextButton(onClick = { /*TODO*/ }, modifier = Modifier.weight(1f)) {
-                Text(text = "Paye")
+        Row(modifier = Modifier.padding(start = 5.dp, end = 5.dp)) {
+            TextButton(onClick = {
+
+                selectedTable.plats.removeAll(selectedTable.plats)
+                selectedTable.desserts.removeAll(selectedTable.desserts)
+                selectedTable.drinks.removeAll(selectedTable.drinks)
+                tableViewModel.updateTable(selectedTable)
+            }, modifier = Modifier
+                .weight(1f)
+                .background(color = MaterialTheme.colors.secondary),
+                elevation = ButtonDefaults.elevation(),
+                //border = BorderStroke(2.dp, color = MaterialTheme.colors.primary),
+            ) {
+                Text(text = "Paye", color = Color.Black)
             }
-            TextButton(onClick = { /*TODO*/ }, modifier = Modifier.weight(1f)) {
-                Text(text = "Send")
+
+
+            Spacer(modifier = Modifier.padding(2.dp))
+
+            TextButton(onClick = {
+
+                val sendedPlatsList = mutableStateListOf<MItem>()
+                selectedTable.plats.forEach { item ->
+                    sendedPlatsList.add(item.copy(send = true))
+                }
+
+                val sendedDessertList = mutableStateListOf<MItemDessert>()
+                selectedTable.desserts.forEach { item ->
+                    sendedDessertList.add(item.copy(send = true))
+                }
+
+
+                val sendedDrinksList = mutableStateListOf<MItemDrinks>()
+               selectedTable.drinks.forEach { item ->
+                   sendedDrinksList.add(item.copy(send = true))
+                }
+                selectedTable.plats = sendedPlatsList
+                selectedTable.desserts = sendedDessertList
+                selectedTable.drinks = sendedDrinksList
+
+                tableViewModel.updateTable(selectedTable)
+
+            }, modifier = Modifier
+                .weight(1f)
+                .background(color = MaterialTheme.colors.primary),
+                elevation = ButtonDefaults.elevation(),
+               // border = BorderStroke(2.dp, color = MaterialTheme.colors.secondary),
+            ) {
+                Text(text = "Send",
+                    color = Color.Black
+                )
             }
         }        
 
