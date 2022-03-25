@@ -75,6 +75,7 @@ fun Home(navController: NavController,
     Column(modifier = Modifier.fillMaxSize()) {
 
         Row(modifier = Modifier. fillMaxWidth(),) {
+
             Column(modifier = Modifier
                 .weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally) {
@@ -103,7 +104,6 @@ fun Home(navController: NavController,
                     }
                 }
                 }
-
 
             Column(modifier = Modifier
                 .weight(1f),
@@ -247,11 +247,11 @@ fun Home(navController: NavController,
                 tableViewModel.updateTable(selectedTable)
             }, modifier = Modifier
                 .weight(1f),
-                border = BorderStroke(2.dp, Color.Green),
-                //.background(color = MaterialTheme.colors.secondary),
+                border = BorderStroke(2.dp, color = MaterialTheme.colors.secondary),
                 shape = RoundedCornerShape(50),
-//                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.secondary)
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Green)
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.secondary,
+//                backgroundColor = MaterialTheme.colors.secondary,
+                )
 
 //                elevation = ButtonDefaults.elevation(),
                 //border = BorderStroke(2.dp, color = MaterialTheme.colors.primary),

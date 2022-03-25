@@ -10,8 +10,10 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -28,7 +30,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -283,7 +288,8 @@ fun ListDrinksCard(drink: MItemDrinks,
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ItemsDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel) {
+fun ItemsDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel
+) {
 
     val scrollState = rememberScrollState()
 
@@ -373,28 +379,32 @@ fun ItemsDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel) {
         )
     }
 
-    Log.d("", "listTableItemsBEFORE: $tableItems")
-
+    /////////////////////////////////////PLATS//////////////////////////////
     Column(modifier = Modifier
         .fillMaxSize()
         .verticalScroll(scrollState)) {
 
+        //////PLATS TITLE TO CART////
 
-        Row(modifier = Modifier.fillMaxWidth()
-            .padding(start = 15.dp, end = 15.dp)
-        ) {
-            Column(modifier = Modifier, horizontalAlignment = Alignment.Start ) {
-                Text(text = "Plates", fontWeight = FontWeight.Bold)
+        if (tableItems.plats.size >= 1) {
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 15.dp, end = 15.dp)
+            ) {
+                Column(modifier = Modifier, horizontalAlignment = Alignment.Start ) {
+                    Text(text = "Plates", fontWeight = FontWeight.Bold)
+                }
             }
+            Divider(modifier = Modifier,
+                color = Color.Black,
+                thickness = 1.dp,
+                 startIndent = 22.dp)
         }
 
         Column(modifier = Modifier.fillMaxSize()) {
-            tableItems.plats?.distinct()?.forEach { item ->
-
-                val columnColor = if (item.send) Color.Blue else Color.White
-
+            tableItems.plats.distinct().forEach { item ->
                 Column(modifier = Modifier
-                    .background(color = columnColor)
+                    //                    .background(color = columnColor)
                     .fillMaxWidth()
                     .clickable {
                         currentItem = item
@@ -407,7 +417,18 @@ fun ItemsDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel) {
                             .padding(start = 15.dp, end = 15.dp)
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(text = item.name + " x" + Collections.frequency(tableItems.plats, item))
+
+                            Box(modifier = Modifier ) {
+                                Row(modifier = Modifier.fillMaxWidth()) {
+                                    Text(text = item.name + " x" + Collections.frequency(tableItems.plats, item))
+                                    Spacer(modifier = Modifier.padding(10.dp))
+                                    Column(modifier = Modifier, horizontalAlignment = Alignment.End) {
+                                        if (item.send) {
+                                            Icon(imageVector = Icons.Default.Check, contentDescription ="", tint = Color.Blue )
+                                        }
+                                    }
+                                }
+                            }
                         }
                         Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
                             Text(text = "$ ${item.price?.toFloat()
@@ -417,24 +438,29 @@ fun ItemsDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel) {
                 }
             }
         }
+        //////////////////DESSERTS TITLE TO CART/////////////////
 
-            Row(modifier = Modifier.fillMaxWidth()
+        if (tableItems.desserts.size >= 1) {
+            Row(modifier = Modifier
+                .fillMaxWidth()
                 .padding(start = 15.dp, end = 15.dp)
             ) {
                 Column(modifier = Modifier, horizontalAlignment = Alignment.Start ) {
                     Text(text = "Desserts", fontWeight = FontWeight.Bold)
                 }
             }
+            Divider(modifier = Modifier,
+                color = Color.Black,
+                thickness = 1.dp,
+                startIndent = 22.dp)
+        }
+
 
 
         ////////////////dessert///
         Column(modifier = Modifier.fillMaxSize()) {
-            tableItems.desserts?.distinct()?.forEach { item ->
-
-                val columnColor = if (item.send) Color.Blue else Color.White
-
+            tableItems.desserts.distinct().forEach { item ->
                 Column(modifier = Modifier
-                    .background(color = columnColor)
                     .fillMaxWidth()
                     .clickable {
                         currentDessert = item
@@ -447,7 +473,17 @@ fun ItemsDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel) {
                             .padding(start = 15.dp, end = 15.dp)
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(text = item.name + " x" + Collections.frequency(tableItems.desserts, item))
+                            Box(modifier = Modifier ) {
+                                Row(modifier = Modifier.fillMaxWidth()) {
+                                    Text(text = item.name + " x" + Collections.frequency(tableItems.desserts, item))
+                                    Spacer(modifier = Modifier.padding(10.dp))
+                                    Column(modifier = Modifier, horizontalAlignment = Alignment.End) {
+                                        if (item.send) {
+                                            Icon(imageVector = Icons.Default.Check, contentDescription ="", tint = Color.Blue )
+                                        }
+                                    }
+                                }
+                            }
                         }
                         Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
                             Text(text = "$ ${item.price?.toFloat()
@@ -457,28 +493,30 @@ fun ItemsDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel) {
                 }
             }
         }
+        ////////////DRINKS TITLE TO CART //////////////
 
-            Row(modifier = Modifier.fillMaxWidth()
+        if (tableItems.drinks.size >= 1) {
+            Row(modifier = Modifier
+                .fillMaxWidth()
                 .padding(start = 15.dp, end = 15.dp)
             ) {
                 Column(modifier = Modifier, horizontalAlignment = Alignment.Start ) {
                     Text(text = "Drinks", fontWeight = FontWeight.Bold)
                 }
             }
+            Divider(modifier = Modifier,
+//                .border(BorderStroke(1.dp, color = Color.Black)),
+                color = Color.Black,
+                thickness = 1.dp,
+                startIndent = 22.dp, )
+        }
 
-
-
-
-        ////////////////drinks///
+        ////////////////drinks////////////////////
         Column(modifier = Modifier.fillMaxSize()) {
             tableItems.drinks.distinct()
                 .forEach { item ->
 
-                val columnColor = if (item.send) Color.Blue else Color.White
-
-
                     Column(modifier = Modifier
-                        .background(color = columnColor)
                         .fillMaxWidth()
                         .clickable {
                             currentDrink = item
@@ -490,9 +528,20 @@ fun ItemsDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel) {
                             .fillMaxWidth()
                             .padding(start = 15.dp, end = 15.dp)
                     ) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(text = item.name + " x" + Collections.frequency(tableItems.drinks, item))
+                        Column(modifier = Modifier.weight(1f),) {
+                            Box(modifier = Modifier ) {
+                                Row(modifier = Modifier.fillMaxWidth()) {
+                                    Text(text = item.name + " x" + Collections.frequency(tableItems.drinks, item))
+                                    Spacer(modifier = Modifier.padding(10.dp))
+                                    Column(modifier = Modifier, horizontalAlignment = Alignment.End) {
+                                        if (item.send) {
+                                            Icon(imageVector = Icons.Default.Check, contentDescription ="", tint = Color.Blue )
+                                        }
+                                    }
+                                }
+                            }
                         }
+
                         Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
                             Text(text = "$ ${item.price?.toFloat()
                                 ?.times(Collections.frequency(tableItems.drinks, item))}")
@@ -501,42 +550,6 @@ fun ItemsDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel) {
                 }
             }
         }
-        //////////////////////////test/////////////////////not send drinks
-//        Column(modifier = Modifier.fillMaxSize()) {
-//            tableItems.drinks
-//                .forEach { item ->
-//
-//                    Log.d("list", "ItemsDisplayToCart: $item")
-//                    val columnColor = if (item.send) Color.Blue else Color.White
-//
-//                    if (!item.send){
-//                        Column(modifier = Modifier
-//                            .background(color = columnColor)
-//                            .fillMaxWidth()
-//                            .clickable {
-//                                currentDrink = item
-//                                inputDialogStateDrinks.value = true
-//                            }
-//                        ) {
-//                            Row(
-//                                modifier = Modifier
-//                                    .fillMaxWidth()
-//                                    .padding(start = 15.dp, end = 15.dp)
-//                            ) {
-//                                Column(modifier = Modifier.weight(1f)) {
-//                                    Text(text = item.name + " x" + Collections.frequency(tableItems.drinks, item))
-//                                }
-//                                Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
-//                                    Text(text = "$ ${item.price?.toFloat()
-//                                        ?.times(Collections.frequency(tableItems.drinks, item))}")
-//                                }
-//                            }
-//                        }
-//                    }
-//                    }
-//
-//        }
-////////////////////////
     }
 }
 
