@@ -1,10 +1,13 @@
 package com.example.mytestapp.screens.creatItem
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -47,13 +50,20 @@ fun CreatItem(navController: NavController,
 
             Row(modifier = Modifier
                 .fillMaxWidth()
-                .padding(25.dp),) {
+                .padding(top = 10.dp, bottom = 10.dp),) {
                 Column(
-                    modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    Text(text = "flecha", modifier = Modifier.clickable { })
-
+                    IconButton(modifier = Modifier
+                        .then(Modifier.size(37.dp)),
+//                        .background(Color.LightGray),
+                        onClick = {
+                        navController.navigate(RestoScreens.RestoSettingsScreen.name)
+                    }) {
+                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription ="back", tint = Color.Blue)
+                    }
                 }
                 Column(
                     modifier = Modifier
@@ -69,7 +79,7 @@ fun CreatItem(navController: NavController,
                             backgroundColor = if (checkedPlats.value) Color.LightGray else Color.Transparent
                         )
                     ) {
-                        Text(text = "Plats")
+                        Text(text = "Plats", color = Color.Blue)
                     }
                 }
                 Column(
@@ -86,7 +96,7 @@ fun CreatItem(navController: NavController,
                             backgroundColor = if (checkedDessert.value) Color.LightGray else Color.Transparent
                         )
                     ) {
-                        Text(text = "Dessert")
+                        Text(text = "Dessert", color = Color.Blue)
                     }
                 }
                 Column(
@@ -103,13 +113,13 @@ fun CreatItem(navController: NavController,
                             backgroundColor = if (checkedDrinks.value) Color.LightGray else Color.Transparent
                         )
                     ) {
-                        Text(text = "Drinks")
+                        Text(text = "Drinks", color = Color.Blue)
                     }
 
                 }
             }
 
-            Divider(modifier = Modifier.padding(15.dp))
+            Divider(modifier = Modifier.padding(1.dp))
 
 
             Column(modifier = Modifier.fillMaxWidth(),

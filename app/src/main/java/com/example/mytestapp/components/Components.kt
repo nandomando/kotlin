@@ -555,13 +555,6 @@ fun ItemsDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel
 
 ////////////////////////////////////////////////////////////
 
-//val inputDialogState = remember { mutableStateOf(false) }
-//
-//if (inputDialogState.value) {
-//    deleteDialog(title = null, state = inputDialogState) {
-//        DeleteView(tableViewModel = tableViewModel)
-//    }
-//}
 
 ////////////////////////////////////DELETE PLATE NAME /////////////////////
 @Composable
@@ -743,42 +736,6 @@ fun DeleteViewDrink(currentItem: MItemDrinks) {
     }
 }
 
-//@Composable
-//fun deleteDialog(title: String?,
-//                 state: MutableState<Boolean>,
-//                 tableViewModel: TableViewModel,
-//                 content: @Composable (() -> Unit)? = null
-//) {
-//    AlertDialog(
-//        onDismissRequest = {
-//            state.value = false
-//        },
-//        title = title?.let {
-//            {
-//                Column(
-//                    Modifier.fillMaxWidth(),
-//                    verticalArrangement = Arrangement.spacedBy(8.dp)
-//                ) {
-//                    Text(text = title)
-//                    Divider(modifier = Modifier.padding(bottom = 8.dp))
-//                }
-//            }
-//        },
-//        text = content,
-//        dismissButton = {
-//            Button(onClick = { state.value = false }) {
-//                Text("Cancel")
-//            }
-//        },
-//        confirmButton = {
-//            Button(onClick = {
-//                //tableViewModel.updateTable()
-//                state.value = false }) {
-//                Text("Delete")
-//            }
-//        }, modifier = Modifier.padding(vertical = 8.dp)
-//    )
-//}
 
 //////////////////////display lazy col test
 //@Composable

@@ -14,7 +14,13 @@ class DrinksRepository @Inject constructor(private val drinksDataBaseDao: Drinks
     suspend fun updateDrink(item: MItemDrinks) = drinksDataBaseDao.update(item)
     suspend fun deleteDrink(item: MItemDrinks) = drinksDataBaseDao.deleteDrink(item)
     suspend fun deleteAllDrinks() = drinksDataBaseDao.deleteAll()
+
+
     fun getAllDrinks(): Flow<List<MItemDrinks>> = drinksDataBaseDao.getDrinks().flowOn(Dispatchers.IO)
         .conflate()
+
+    fun getDrink(itemId: String): Flow<MItemDrinks> = drinksDataBaseDao.getDrinksById(itemId).flowOn(Dispatchers.IO)
+        .conflate()
+
 
 }

@@ -79,7 +79,10 @@ fun Home(navController: NavController,
             Column(modifier = Modifier
                 .weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally) {
-                TextButton(onClick = { expanded = !expanded }) {
+                TextButton(onClick = { expanded = !expanded },
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = Color.Blue
+                    )) {
                     //Icon(imageVector = icon, contentDescription = "")
                     Text(text = "Table: $selectedTableText", overflow = TextOverflow.Clip)
                 }
@@ -113,7 +116,8 @@ fun Home(navController: NavController,
                     checkedDrinks.value = false
                     checkedDessert.value = false
                 }, colors = ButtonDefaults.textButtonColors(
-                    backgroundColor = if (checkedPlats.value) Color.LightGray else Color.Transparent
+                    backgroundColor = if (checkedPlats.value) Color.LightGray else Color.Transparent,
+                    contentColor = Color.Blue
                 )) {
                     Text(text = "Plats")
                 }
@@ -126,7 +130,9 @@ fun Home(navController: NavController,
                     checkedDrinks.value = false
                     checkedDessert.value = true
                 }, colors = ButtonDefaults.textButtonColors(
-                    backgroundColor = if (checkedDessert.value) Color.LightGray else Color.Transparent
+                    backgroundColor = if (checkedDessert.value) Color.LightGray else Color.Transparent,
+                    contentColor = Color.Blue
+
                 )) {
                     Text(text = "Dessert")
                 }
@@ -139,7 +145,9 @@ fun Home(navController: NavController,
                     checkedDrinks.value = true
                     checkedDessert.value = false
                 }, colors = ButtonDefaults.textButtonColors(
-                    backgroundColor = if (checkedDrinks.value) Color.LightGray else Color.Transparent
+                    backgroundColor = if (checkedDrinks.value) Color.LightGray else Color.Transparent,
+                    contentColor = Color.Blue
+
                 )) {
                     Text(text = "Drinks")
                 }
@@ -152,6 +160,7 @@ fun Home(navController: NavController,
 
                 }, colors = ButtonDefaults.textButtonColors(
                     // backgroundColor = if () Color.LightGray else Color.Transparent
+                    contentColor = Color.Blue
                 )) {
                     Text(text = "To Go")
                 }

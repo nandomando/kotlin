@@ -10,7 +10,7 @@ interface DessertDataBaseDao {
     fun getDesserts(): Flow<List<MItemDessert>>
 
     @Query(value = "SELECT * from items_dessert_tbl where dessertId =:id")
-    suspend fun getDessertById(id: String): MItemDessert
+    fun getDessertById(id: String): Flow<MItemDessert>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(item: MItemDessert)

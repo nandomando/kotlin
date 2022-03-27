@@ -1,11 +1,15 @@
 package com.example.mytestapp.navigation
 
+import androidx.browser.browseractions.BrowserActionsIntent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.mytestapp.model.MItem
 import com.example.mytestapp.viewModels.ItemViewModel
 import com.example.mytestapp.screens.RestoSplashScreen
 import com.example.mytestapp.screens.creatItem.CreatItem
@@ -49,7 +53,15 @@ fun RestoNavigation() {
         }
 
         composable(RestoScreens.DetailScreen.name) {
-            ItemDetailsScreen(navController = navController)
+            val itemViewModel = hiltViewModel<ItemViewModel>()
+            val dessertViewModel = hiltViewModel<DessertViewModel>()
+            val drinksViewModel = hiltViewModel<DrinksViewModel>()
+            ItemDetailsScreen(
+                navController = navController,
+                itemViewModel = itemViewModel,
+                dessertViewModel = dessertViewModel,
+                drinksViewModel = drinksViewModel,
+            )
         }
 
         composable(RestoScreens.SearchScreen.name) {
@@ -60,9 +72,29 @@ fun RestoNavigation() {
             RestoStatsScreen(navController = navController)
         }
 
-        composable(RestoScreens.UpdateScreen.name) {
-            ItemUpdateScreen(navController = navController)
-        }
+
+
+        val updateItem = RestoScreens.UpdateScreen.name
+        composable( "$updateItem/{itemId}",
+            arguments = listOf(navArgument("itemId") {
+                type = NavType.StringType
+            })) { navBackStackEntry ->
+
+            val itemViewModel = hiltViewModel<ItemViewModel>()
+            val drinksViewModel = hiltViewModel<DrinksViewModel>()
+            val dessertViewModel = hiltViewModel<DessertViewModel>()
+            navBackStackEntry.arguments?.getString("itemId").let {
+                ItemUpdateScreen(
+                    navController = navController,
+                    itemId=  it.toString(),
+                    itemViewModel = itemViewModel,
+                    drinksViewModel = drinksViewModel,
+                    dessertViewModel = dessertViewModel
+                )
+            }
+
+            }
+
 
         composable(RestoScreens.RestoSettingsScreen.name) {
             RestoSettings(navController = navController)

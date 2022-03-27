@@ -3,6 +3,7 @@ package com.example.mytestapp.viewModels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mytestapp.model.MItem
 import com.example.mytestapp.model.MItemDessert
 import com.example.mytestapp.repository.DessertRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,6 +20,9 @@ import javax.inject.Inject
 class DessertViewModel  @Inject constructor(private val repository: DessertRepository): ViewModel(){
     private val _dessertList = MutableStateFlow<List<MItemDessert>>(emptyList())
     val dessertList = _dessertList.asStateFlow()
+
+    private  val _currentDessert = MutableStateFlow(MItemDessert())
+    val currentDessert = _currentDessert.asStateFlow()
 
     init {
 
@@ -45,5 +49,13 @@ class DessertViewModel  @Inject constructor(private val repository: DessertRepos
     fun removeDessert(item: MItemDessert) = viewModelScope.launch {
         repository.deleteDessert(item)
     }
+
+    fun getDessert(itemId: String) = viewModelScope.launch(Dispatchers.IO){
+        repository.getDessert(itemId).distinctUntilChanged().collect {
+            item ->
+            _currentDessert.value = item
+        }
+    }
+
 
 }
