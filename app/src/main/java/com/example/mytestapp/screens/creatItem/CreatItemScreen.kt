@@ -131,6 +131,7 @@ fun CreatItem(navController: NavController,
                         bottom = 8.dp),
                     text = name,
                     label = "Product",
+                    placeholder = "",
                     onTextChange = {
                         if (it.all { char ->
                                 char.isLetter() || char.isWhitespace()
@@ -143,13 +144,14 @@ fun CreatItem(navController: NavController,
                         bottom = 8.dp),
                     text = description,
                     label = "Description",
+                    placeholder = "",
                     onTextChange = {
                         if (it.all { char ->
                                 char.isLetter() || char.isWhitespace()
                             }) description = it
                     })
 
-                var price = remember { mutableStateOf("")}
+                val price = remember { mutableStateOf("")}
 
                 val change : (String) -> Unit = { it ->
                     price.value = it  // it is supposed to be this

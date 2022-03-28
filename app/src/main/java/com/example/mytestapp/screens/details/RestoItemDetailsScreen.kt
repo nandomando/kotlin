@@ -123,7 +123,7 @@ fun ItemDetailsScreen(navController: NavController,
                     Card(modifier = Modifier.fillMaxWidth()
                         .padding(start = 10.dp, end = 10.dp)
                         .clickable {
-                            navController.navigate(RestoScreens.UpdateScreen.name + "/${item.dessertId}")
+                            navController.navigate(RestoScreens.DessertUpdateScreen.name + "/${item.dessertId}")
 
                         }
                     ) {
@@ -167,7 +167,7 @@ fun ItemDetailsScreen(navController: NavController,
                     Card(modifier = Modifier.fillMaxWidth()
                         .padding(start = 10.dp, end = 10.dp)
                         .clickable {
-                            navController.navigate(RestoScreens.UpdateScreen.name + "/${item.drinksId}")
+                            navController.navigate(RestoScreens.DrinksUpdateScreen.name + "/${item.drinksId}")
                         }
                     ) {
                         Column() {

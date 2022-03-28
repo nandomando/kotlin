@@ -66,10 +66,6 @@ fun Home(navController: NavController,
     val checkedDessert = remember { mutableStateOf(false)}
     val checkedDrinks = remember { mutableStateOf(false)}
 
-    val sended = remember { mutableStateOf(true)}
-
-
-
 
 
     Column(modifier = Modifier.fillMaxSize()) {

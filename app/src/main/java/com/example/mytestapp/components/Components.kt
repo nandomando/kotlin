@@ -805,6 +805,7 @@ fun itemInputText(
     modifier: Modifier = Modifier,
     text: String,
     label: String,
+    placeholder: String,
     maxLine: Int = 1,
     onTextChange: (String) -> Unit,
     onImeAction: () -> Unit = {}
@@ -825,7 +826,8 @@ fun itemInputText(
             keyboardController?.hide()
 
         }),
-        modifier = modifier
+        modifier = modifier,
+        placeholder = { Text(text = placeholder)}
     )
 
 }

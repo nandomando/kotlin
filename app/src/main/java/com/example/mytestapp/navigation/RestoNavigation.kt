@@ -20,6 +20,8 @@ import com.example.mytestapp.screens.search.SearchScreen
 import com.example.mytestapp.screens.settings.RestoSettings
 import com.example.mytestapp.screens.stats.RestoStatsScreen
 import com.example.mytestapp.screens.tables.Tables
+import com.example.mytestapp.screens.update.DessertUpdateScreen
+import com.example.mytestapp.screens.update.DrinkUpdateScreen
 import com.example.mytestapp.screens.update.ItemUpdateScreen
 import com.example.mytestapp.viewModels.DessertViewModel
 import com.example.mytestapp.viewModels.DrinksViewModel
@@ -81,19 +83,52 @@ fun RestoNavigation() {
             })) { navBackStackEntry ->
 
             val itemViewModel = hiltViewModel<ItemViewModel>()
-            val drinksViewModel = hiltViewModel<DrinksViewModel>()
-            val dessertViewModel = hiltViewModel<DessertViewModel>()
             navBackStackEntry.arguments?.getString("itemId").let {
                 ItemUpdateScreen(
                     navController = navController,
                     itemId=  it.toString(),
                     itemViewModel = itemViewModel,
-                    drinksViewModel = drinksViewModel,
-                    dessertViewModel = dessertViewModel
                 )
             }
 
             }
+
+
+
+        val updateDessert = RestoScreens.DessertUpdateScreen.name
+        composable( "$updateDessert/{dessertId}",
+            arguments = listOf(navArgument("dessertId") {
+                type = NavType.StringType
+            })) { navBackStackEntry ->
+
+            val dessertViewModel = hiltViewModel<DessertViewModel>()
+            navBackStackEntry.arguments?.getString("dessertId").let {
+                DessertUpdateScreen(
+                    navController = navController,
+                    dessertId=  it.toString(),
+                    dessertViewModel= dessertViewModel
+                )
+            }
+        }
+
+
+
+        val updateDrink = RestoScreens.DrinksUpdateScreen.name
+        composable( "$updateDrink/{drinkId}",
+            arguments = listOf(navArgument("drinkId") {
+                type = NavType.StringType
+            })) { navBackStackEntry ->
+
+            val drinksViewModel = hiltViewModel<DrinksViewModel>()
+            navBackStackEntry.arguments?.getString("drinkId").let {
+                DrinkUpdateScreen(
+                    navController = navController,
+                    drinkId = it.toString(),
+                    drinksViewModel = drinksViewModel
+                )
+            }
+        }
+
 
 
         composable(RestoScreens.RestoSettingsScreen.name) {
