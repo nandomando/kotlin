@@ -1,5 +1,6 @@
 package com.example.mytestapp.screens.creatItem
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.mytestapp.components.itemButton
 import com.example.mytestapp.components.itemInputText
+import com.example.mytestapp.model.FireBaseItem
 import com.example.mytestapp.model.MItem
 import com.example.mytestapp.model.MItemDessert
 import com.example.mytestapp.model.MItemDrinks
@@ -26,6 +28,9 @@ import com.example.mytestapp.navigation.RestoScreens
 import com.example.mytestapp.viewModels.DessertViewModel
 import com.example.mytestapp.viewModels.DrinksViewModel
 import com.example.mytestapp.viewModels.ItemViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import java.util.*
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -60,7 +65,7 @@ fun CreatItem(navController: NavController,
                         .then(Modifier.size(37.dp)),
 //                        .background(Color.LightGray),
                         onClick = {
-                        navController.navigate(RestoScreens.RestoSettingsScreen.name)
+                        navController.navigate(RestoScreens.DetailScreen.name)
                     }) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription ="back", tint = Color.Blue)
                     }
@@ -177,11 +182,20 @@ fun CreatItem(navController: NavController,
                                 itemViewModel.addItem(MItem(name = name,
                                     description = description,
                                     price = price.value))
-                                        name = ""
+
+                                val plate = FireBaseItem(
+                                    name = name,
+                                    description = description,
+                                    price = price.value,
+                                    userId = FirebaseAuth.getInstance().currentUser?.uid.toString())
+                                saveToFirebase(plate, navController)
+
+                                name = ""
                                 description = ""
-                                navController.navigate(RestoScreens.RestoHomeScreen.name)
-                                        Toast.makeText(context, "Item Added",
-                                Toast.LENGTH_SHORT).show()
+                                price.value = ""
+//                                navController.navigate(RestoScreens.RestoHomeScreen.name)
+                                Toast.makeText(context, "Item Added",
+                                    Toast.LENGTH_SHORT).show()
                             }
                             if(checkedDessert.value) {
                                 dessertViewModel.addDessert(
@@ -191,7 +205,8 @@ fun CreatItem(navController: NavController,
                                 )
                                 name = ""
                                 description = ""
-                                navController.navigate(RestoScreens.RestoHomeScreen.name)
+                                price.value = ""
+//                                navController.navigate(RestoScreens.RestoHomeScreen.name)
                                 Toast.makeText(context, "Dessert Added",
                                     Toast.LENGTH_SHORT).show()
                             }
@@ -203,7 +218,8 @@ fun CreatItem(navController: NavController,
                                 )
                                 name = ""
                                 description = ""
-                                navController.navigate(RestoScreens.RestoHomeScreen.name)
+                                price.value = ""
+//                                navController.navigate(RestoScreens.RestoHomeScreen.name)
                                 Toast.makeText(context, "Drink Added",
                                     Toast.LENGTH_SHORT).show()
                             }
@@ -212,4 +228,28 @@ fun CreatItem(navController: NavController,
             }
 
         }
+}
+
+
+
+fun saveToFirebase(plate: FireBaseItem, navController: NavController) {
+    val db = FirebaseFirestore.getInstance()
+    val dbCollection = db.collection("plates")
+
+    if (plate.toString().isNotEmpty()) {
+        dbCollection.add(plate).addOnSuccessListener {
+            documentRef ->
+            val docId = documentRef.id
+            dbCollection.document(docId)
+                .update(hashMapOf("id" to docId) as Map<String, Any>)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        navController.popBackStack()
+                    }
+                }.addOnFailureListener {
+                    Log.w("ERROR", "saveToFirebase:Error updating doc",it )
+                }
+
+        }
+    } else {}
 }

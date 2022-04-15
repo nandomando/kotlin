@@ -32,7 +32,14 @@ data class MTable(
     var drinks: SnapshotStateList<MItemDrinks> = mutableStateListOf(),
 
     @ColumnInfo(name = "plats_")
-    var plats: SnapshotStateList<MItem> = mutableStateListOf()
+    var plats: SnapshotStateList<MItem> = mutableStateListOf(),
+
+    @ColumnInfo(name = "offSetX")
+    var offSetX: Float = 0f,
+
+    @ColumnInfo(name = "offSetY")
+    var offSetY: Float = 0f
+
 
 ){}
 

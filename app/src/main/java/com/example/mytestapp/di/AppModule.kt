@@ -3,6 +3,9 @@ package com.example.mytestapp.di
 import android.content.Context
 import androidx.room.Room
 import com.example.mytestapp.data.*
+import com.example.mytestapp.repository.FireRepository
+import com.google.android.gms.common.internal.Constants
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,6 +17,22 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Singleton
+    @Provides
+    fun provideFirePlateRepository()
+    = FireRepository(queryItem = FirebaseFirestore.getInstance()
+        .collection("plates"))
+
+//    @Singleton
+//    @Provides
+//    fun provideItemApi(): MItemApi {
+//        return Retrofit.Builder()
+////            .baseUrl(Constants)
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//            .create(MItemApi::class.java)
+//    }
 
     @Singleton
     @Provides

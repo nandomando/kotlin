@@ -10,7 +10,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.mytestapp.model.MItem
-import com.example.mytestapp.viewModels.ItemViewModel
 import com.example.mytestapp.screens.RestoSplashScreen
 import com.example.mytestapp.screens.creatItem.CreatItem
 import com.example.mytestapp.screens.details.ItemDetailsScreen
@@ -23,9 +22,7 @@ import com.example.mytestapp.screens.tables.Tables
 import com.example.mytestapp.screens.update.DessertUpdateScreen
 import com.example.mytestapp.screens.update.DrinkUpdateScreen
 import com.example.mytestapp.screens.update.ItemUpdateScreen
-import com.example.mytestapp.viewModels.DessertViewModel
-import com.example.mytestapp.viewModels.DrinksViewModel
-import com.example.mytestapp.viewModels.TableViewModel
+import com.example.mytestapp.viewModels.*
 
 @ExperimentalComposeUiApi
 @Composable
@@ -41,12 +38,14 @@ fun RestoNavigation() {
             val dessertViewModel = hiltViewModel<DessertViewModel>()
             val drinksViewModel = hiltViewModel<DrinksViewModel>()
             val tableViewModel = hiltViewModel<TableViewModel>()
+            val firebaseViewModel = hiltViewModel<FirebaseViewModel>()
             Home(
                 navController = navController,
                 itemViewModel = itemViewModel,
                 dessertViewModel = dessertViewModel,
                 drinksViewModel = drinksViewModel,
-                tableViewModel = tableViewModel
+                tableViewModel = tableViewModel,
+                firebaseViewModel = firebaseViewModel
             )
         }
 

@@ -1,10 +1,7 @@
 package com.example.mytestapp.viewModels
 
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,15 +22,24 @@ class ItemViewModel @Inject constructor( private val repository: ItemRepository)
     val currentItem = _currentItem.asStateFlow()
 
 
+
+//    private val  _platsList = mutableStateListOf<MItem>()
+//    val platsList = _platsList
+
+
     init {
 
         viewModelScope.launch(Dispatchers.IO){
             repository.getAllItem().distinctUntilChanged()
                 .collect { listOfItems ->
                     if (listOfItems.isNullOrEmpty()) {
-                        Log.d("empty", "empty list ")
+                        Log.d("empty", "EMPTY PLATS list ")
                     } else {
-                        _itemList.value = listOfItems
+
+                      _itemList.value = listOfItems
+//                        listOfItems.forEach { item ->
+//                            platsList.add(item)
+//                        }
                     }
                 }
         }

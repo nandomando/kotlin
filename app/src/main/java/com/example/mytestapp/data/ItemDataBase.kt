@@ -11,7 +11,7 @@ import com.example.mytestapp.utils.ListModelConverter
 import com.example.mytestapp.utils.PriceConverter
 import com.example.mytestapp.utils.UUIDConverter
 
-@Database(entities = [MItem::class, MItemDessert::class, MItemDrinks::class, MTable::class], version = 23, exportSchema =false )
+@Database(entities = [MItem::class, MItemDessert::class, MItemDrinks::class, MTable::class], version = 27, exportSchema =false )
 @TypeConverters(UUIDConverter::class, PriceConverter::class, ListModelConverter::class)
 abstract class ItemDataBase: RoomDatabase() {
 

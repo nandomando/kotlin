@@ -53,7 +53,7 @@ fun RestoSettings(navController: NavController){
                            )
                        )
                        .fillMaxSize(),
-                    color = Color(0xFFDFE6EB),
+                    color = Color(0xFF92CBDF),
                     elevation = 6.dp) {
 
                        Column(modifier = Modifier

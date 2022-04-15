@@ -4,8 +4,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectVerticalDragGestures
-import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,14 +25,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.mytestapp.components.BottomNavBar
 import com.example.mytestapp.components.itemButton
-import com.example.mytestapp.model.MItem
 import com.example.mytestapp.model.MTable
-import com.example.mytestapp.navigation.RestoScreens
 import com.example.mytestapp.repository.TableRepository
 import com.example.mytestapp.ui.theme.Purple500
 import com.example.mytestapp.viewModels.TableViewModel
@@ -55,13 +49,6 @@ fun Tables(navController: NavController, tableViewModel: TableViewModel) {
         }
     }
 
-//    if (inputDialogState.value) {
-//        CommonDialogg(state = inputDialogState) {
-//            InputView(tableViewModel = tableViewModel)
-//        }
-//    }
-
-
     Scaffold() {
         Surface(modifier = Modifier.fillMaxSize()) {
             Row(modifier = Modifier.fillMaxSize()) {
@@ -78,16 +65,16 @@ fun Tables(navController: NavController, tableViewModel: TableViewModel) {
                     //MultipleDraggableObject(letter = "A")
                 }
             }
-            Row() {
-                tableList.forEach{
-                    MultipleDraggableObject(letter = "${it.number}")
+            Box() {
+                tableList.forEach{ table ->
+                    MultipleDraggableObject(table = table, tableViewModel = tableViewModel)
                 }
             }
             Row(modifier = Modifier, verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.End) {
             AddTableBtn {
                 inputDialogState.value = true
             }
-            Spacer(modifier = Modifier.padding(15.dp))
+//            Spacer(modifier = Modifier.padding(15.dp))
             }
             Row(modifier = Modifier, verticalAlignment = Alignment.Bottom) {
                 BottomNavBar(navController)
@@ -212,9 +199,19 @@ fun CommonDialog(title: String?,
 
 
 @Composable
-fun MultipleDraggableObject(letter: String) {
-    val offsetX = remember { mutableStateOf(0f) }
-    val offsetY = remember { mutableStateOf(0f) }
+fun MultipleDraggableObject(table: MTable, tableViewModel: TableViewModel) {
+
+    var initOffsetX = table.offSetX
+    var initOffsetY = table.offSetY
+    val offsetX = remember { mutableStateOf(initOffsetX) }
+    val offsetY = remember { mutableStateOf(initOffsetY) }
+
+
+    Log.d("init", "INITX: $initOffsetX")
+    Log.d("init", "INITY: $initOffsetY")
+
+//    val offsetX = 0f
+//    val offsetY = 0f
 
     Box(
         modifier = Modifier
@@ -222,6 +219,10 @@ fun MultipleDraggableObject(letter: String) {
                 IntOffset(
                     x = offsetX.value.roundToInt(),
                     y = offsetY.value.roundToInt()
+//                    x = initOffsetX.roundToInt(),
+//                    y = initOffsetY.roundToInt()
+
+
                 )
             }
             .pointerInput(Unit) {
@@ -233,6 +234,15 @@ fun MultipleDraggableObject(letter: String) {
                     // Log.d("", "dragamount:$dragAmount ")
                     offsetX.value += dragAmount.x
                     offsetY.value += dragAmount.y
+                    Log.d("drag", "OFFSETx:$offsetX ")
+                    Log.d("drag", "OFFSETy: $offsetY")
+                    initOffsetX += dragAmount.x
+                    initOffsetY += dragAmount.y
+                    Log.d("INIT", "X: $initOffsetX")
+                    Log.d("INIT", "Y:$initOffsetY ")
+                    table.offSetX = initOffsetX
+                    table.offSetY = initOffsetY
+                    tableViewModel.updateTable(table)
                 }
             }
 
@@ -241,8 +251,10 @@ fun MultipleDraggableObject(letter: String) {
             .background(Color.LightGray),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = letter,
+        Text( modifier = Modifier
+//            .offset(offsetX.value.dp,offsetY.value.dp),
+                ,
+            text = table.number.toString(),
             fontSize = 30.sp,
             color = Color.White,
             textAlign = TextAlign.Center,

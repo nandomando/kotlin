@@ -3,10 +3,11 @@ package com.example.mytestapp.screens.update
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -15,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mytestapp.components.itemButton
 import com.example.mytestapp.components.itemInputText
@@ -34,13 +36,31 @@ fun DessertUpdateScreen(navController: NavController,
 
     Column(modifier = Modifier.fillMaxSize()) {
 
-        Row() {
-            Column() {
-                Text(text = "update item with id :${dessertUpdate.name}")
-                Text(text = "update item with id :${dessertUpdate.description}")
 
+        Row(modifier = Modifier.fillMaxWidth()) {
+
+            Box() {
+                Column(
+                    modifier = Modifier,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    IconButton(modifier = Modifier
+                        .then(Modifier.size(37.dp)),
+//                        .background(Color.LightGray),
+                        onClick = {
+                            navController.navigate(RestoScreens.DetailScreen.name)
+                        }) {
+                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription ="back", tint = Color.Blue)
+                    }
+                }
+                Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                    Text(text = "${dessertUpdate.name}", color = Color.Blue, fontSize = 23.sp)
+                }
             }
+
         }
+
 
         Row(modifier = Modifier.weight(1f)) {
             Column(
@@ -62,7 +82,7 @@ fun DessertUpdateScreen(navController: NavController,
                             bottom = 8.dp
                         ),
                         text = name,
-                        label = "Plate",
+                        label = "Dessert",
                         placeholder = "",
                         onTextChange = {
                             if (it.all { char ->
@@ -103,22 +123,45 @@ fun DessertUpdateScreen(navController: NavController,
 
                     )
 
-                    itemButton(text = "Save",
-                        onClick = {
-                            if (name.isNotEmpty() && description.isNotEmpty() && price.value.isNotEmpty()) {
-                                dessertUpdate.name = name
-                                dessertUpdate.description = description
-                                dessertUpdate.price = price.value
-                                dessertViewModel.updateDessert(dessertUpdate)
-//                                name = ""
-//                                description = ""
+                    Row(modifier = Modifier.fillMaxWidth() .padding(start = 10.dp, end = 10.dp)) {
+                        Column(modifier = Modifier.weight(1f) .padding(end = 3.dp)) {
+                            Button(onClick = {
+//                                dessertViewModel.removeDessert(dessertUpdate)
                                 navController.navigate(RestoScreens.DetailScreen.name)
                                 Toast.makeText(
-                                    context, "Dessert Updated",
+                                    context, "Cancel",
                                     Toast.LENGTH_SHORT
                                 ).show()
+                            },
+                                shape = CircleShape,
+                                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
+                                modifier = Modifier.fillMaxWidth(),) {
+                                Text("Cancel", color = Color.White)
                             }
-                        })
+                        }
+                        Column(modifier = Modifier.weight(1f) .padding(start = 3.dp)) {
+                            itemButton(text = "Save",
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = {
+                                    if (name.isNotEmpty() && description.isNotEmpty() && price.value.isNotEmpty()) {
+                                        dessertUpdate.name = name
+                                        dessertUpdate.description = description
+                                        dessertUpdate.price = price.value
+                                        dessertViewModel.updateDessert(dessertUpdate)
+//                                name = ""
+//                                description = ""
+                                        navController.navigate(RestoScreens.DetailScreen.name)
+                                        Toast.makeText(
+                                            context, "Dessert Updated",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                })
+                        }
+
+                    }
+
+
                 }
             }
         }

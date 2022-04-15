@@ -1,6 +1,7 @@
 package com.example.mytestapp.viewModels
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mytestapp.model.MItem
@@ -24,15 +25,22 @@ class DrinksViewModel @Inject constructor(private val repository: DrinksReposito
     private val _currentDrink = MutableStateFlow(MItemDrinks())
     val currentDrink = _currentDrink.asStateFlow()
 
+//    private val _drinkListMutable = mutableStateListOf<MItemDrinks>()
+//    val drinkListMutable = _drinkListMutable
+
+
     init {
 
         viewModelScope.launch(Dispatchers.IO){
             repository.getAllDrinks().distinctUntilChanged()
                 .collect { listOfItems ->
                     if (listOfItems.isNullOrEmpty()) {
-                        Log.d("empty", "empty list ")
+                        Log.d("empty", "EMPTY DRINK list ")
                     } else {
                         _drinksList.value = listOfItems
+//                        listOfItems.forEach { item ->
+//                            drinkListMutable.add(item)
+//                        }
                     }
                 }
         }

@@ -403,6 +403,8 @@ fun ItemsDisplayToCart (tableItems:  MTable, tableViewModel: TableViewModel
 
         Column(modifier = Modifier.fillMaxSize()) {
             tableItems.plats.distinct().forEach { item ->
+
+                Log.d("id", "PLATESid: ${item.plateId}")
                 Column(modifier = Modifier
                     //                    .background(color = columnColor)
                     .fillMaxWidth()

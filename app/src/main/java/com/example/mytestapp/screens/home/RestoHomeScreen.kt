@@ -28,16 +28,13 @@ import androidx.room.ColumnInfo
 import coil.compose.ImagePainter
 import com.example.mytestapp.components.*
 import com.example.mytestapp.data.TableDataBaseDao
-import com.example.mytestapp.model.MItem
-import com.example.mytestapp.model.MItemDessert
-import com.example.mytestapp.model.MItemDrinks
-import com.example.mytestapp.model.MTable
-import com.example.mytestapp.viewModels.DessertViewModel
-import com.example.mytestapp.viewModels.DrinksViewModel
-import com.example.mytestapp.viewModels.ItemViewModel
-import com.example.mytestapp.viewModels.TableViewModel
+import com.example.mytestapp.model.*
+import com.example.mytestapp.viewModels.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.rpc.context.AttributeContext
 import io.grpc.internal.SharedResourceHolder
+import kotlinx.coroutines.tasks.await
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -47,8 +44,25 @@ fun Home(navController: NavController,
     itemViewModel: ItemViewModel,
          dessertViewModel: DessertViewModel,
          drinksViewModel: DrinksViewModel,
-         tableViewModel: TableViewModel
+         tableViewModel: TableViewModel,
+         firebaseViewModel: FirebaseViewModel
 ){
+
+    var listOfItems = emptyList<FireBaseItem>()
+    val currentUser = FirebaseAuth.getInstance().currentUser
+
+    if (!firebaseViewModel.data.value.data.isNullOrEmpty()) {
+        listOfItems = firebaseViewModel.data.value.data!!.toList().filter { mItemFire ->
+            mItemFire.userId == currentUser?.uid.toString()
+        }
+    }
+    Log.d("SUPER", "IMPORTANTE: ${firebaseViewModel.data.value.data!!.toList().filter {
+            m -> m.userId == currentUser?.uid.toString()
+    }}")
+
+    Log.d("super", "LISTAFIREBASEe:${listOfItems}")
+
+
     val tableList = tableViewModel.tableList.collectAsState().value
     val drinksList = drinksViewModel.drinksList.collectAsState().value
     val dessertList = dessertViewModel.dessertList.collectAsState().value
@@ -65,7 +79,6 @@ fun Home(navController: NavController,
     val checkedPlats = remember { mutableStateOf(true)}
     val checkedDessert = remember { mutableStateOf(false)}
     val checkedDrinks = remember { mutableStateOf(false)}
-
 
 
     Column(modifier = Modifier.fillMaxSize()) {
